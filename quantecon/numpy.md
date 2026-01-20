@@ -10,15 +10,8 @@ kernelspec:
 ---
 
 (np)=
-```{raw} jupyter
-<div id="qe-notebook-header" align="right" style="text-align:right;">
-        <a href="https://quantecon.org/" title="quantecon.org">
-                <img style="width:250px;display:inline;" width="250px" src="https://assets.quantecon.org/img/qe-menubar-logo.svg" alt="QuantEcon">
-        </a>
-</div>
-```
 
-# {index}`NumPy <single: NumPy>`
+# NumPy
 
 ```{index} single: Python; NumPy
 ```
@@ -499,9 +492,8 @@ a + b
 Here is a visual representation of this broadcasting operation:
 
 ```{code-cell} python3
----
-tags: [hide-input]
----
+:tags: [hide-input]
+
 # Adapted and modified based on the code in the book written by Jake VanderPlas (see https://jakevdp.github.io/PythonDataScienceHandbook/06.00-figure-code.html#Broadcasting)
 # Originally from astroML: see https://www.astroml.org/book_figures/appendix/fig_broadcast_visual.html
 
@@ -628,9 +620,7 @@ a + b
 Here is a visual representation of this broadcasting operation:
 
 ```{code-cell} python3
----
-tags: [hide-input]
----
+:tags: [hide-input]
 
 fig = plt.figure(figsize=(5, 1), facecolor='w')
 ax = plt.axes([0, 0, 1, 1], xticks=[], yticks=[], frameon=False)
@@ -697,9 +687,7 @@ a + b
 Here is a visual representation of this broadcasting operation:
 
 ```{code-cell} python3
----
-tags: [hide-input]
----
+:tags: [hide-input]
 
 # Draw a figure and axis with no boundary
 fig = plt.figure(figsize=(5, 1), facecolor='w')
@@ -753,9 +741,8 @@ While broadcasting is very useful, it can sometimes seem confusing.
 For example, let's try adding `a -> (3, 2)` and `b -> (3,)`.
 
 ```{code-cell} python3
----
-tags: [raises-exception]
----
+:tags: [raises-exception]
+
 a = np.array(
       [[1, 2],
        [4, 5],
@@ -771,9 +758,8 @@ The `ValueError` tells us that operands could not be broadcast together.
 Here is a visual representation to show why this broadcasting cannot be executed:
 
 ```{code-cell} python3
----
-tags: [hide-input]
----
+:tags: [hide-input]
+
 # Draw a figure and axis with no boundary
 fig = plt.figure(figsize=(3, 1.3), facecolor='w')
 ax = plt.axes([0, 0, 1, 1], xticks=[], yticks=[], frameon=False)
@@ -877,7 +863,7 @@ a
 What's happened is that we have changed `a` by changing `b`.
 
 The name `b` is bound to `a` and becomes just another reference to the
-array (the Python assignment model is described in more detail {doc}`later in the course <python_advanced_features>`).
+array (the Python assignment model is described in more detail later in the course).
 
 Hence, it has equal rights to make changes to that array.
 
@@ -1077,7 +1063,7 @@ np.linalg.inv(A)           # Compute the inverse
 
 Much of this functionality is also available in [SciPy](https://scipy.org/), a collection of modules that are built on top of NumPy.
 
-We'll cover the SciPy versions in more detail {doc}`soon <scipy>`.
+We'll cover the SciPy versions in more detail [soon](scipy.md).
 
 For a comprehensive list of what's available in NumPy see [this documentation](https://numpy.org/doc/stable/reference/routines.html).
 
@@ -1106,8 +1092,8 @@ for i in range(n):
 Now, let's look at the output of the htop system monitor on our machine while
 this code is running:
 
-```{figure} /_static/lecture_specific/parallelization/htop_parallel_npmat.png
-:scale: 80
+```{figure} _static/lecture_specific/parallelization/htop_parallel_npmat.png
+:width: 80%
 ```
 
 We can see that 4 of the 8 CPUs are running at full speed.
@@ -1134,7 +1120,7 @@ Consider the polynomial expression
 p(x) = a_0 + a_1 x + a_2 x^2 + \cdots a_N x^N = \sum_{n=0}^N a_n x^n
 ```
 
-{ref}`Earlier <pyess_ex2>`, you wrote a simple function `p(x, coeff)` to evaluate {eq}`np_polynom` without considering efficiency.
+Earlier, you wrote a simple function `p(x, coeff)` to evaluate {eq}`np_polynom` without considering efficiency.
 
 Now write a new function that does the same job, but uses NumPy arrays and array operations for its computations, rather than any form of Python loop.
 
@@ -1300,7 +1286,7 @@ using descriptors that behaves as we desire can be found
 ```{exercise}
 :label: np_ex3
 
-Recall our {ref}`earlier discussion <oop_ex1>` of the empirical cumulative distribution function.
+Recall the empirical cumulative distribution function.
 
 Your task is to
 
@@ -1403,7 +1389,7 @@ F.plot(ax)
 :label: np_ex4
 ```
 
-Recall that [broadcasting](broadcasting) in Numpy can help us conduct element-wise operations on arrays with different number of dimensions without using `for` loops.
+Recall that [broadcasting](#broadcasting) in Numpy can help us conduct element-wise operations on arrays with different number of dimensions without using `for` loops.
 
 In this exercise, try to use `for` loops to replicate the result of the following broadcasting operations.
 
@@ -1420,9 +1406,8 @@ A = x / y
 Here is the output
 
 ```{code-cell} python3
----
-tags: [hide-output]
----
+:tags: [hide-output]
+
 print(A)
 ```
 
@@ -1452,9 +1437,8 @@ with qe.Timer("Broadcasting operation"):
 Here is the output
 
 ```{code-cell} python3
----
-tags: [hide-output]
----
+:tags: [hide-output]
+
 print(B)
 ```
 
@@ -1483,9 +1467,8 @@ for i in range(n):
 Compare the results to check your answer
 
 ```{code-cell} python3
----
-tags: [hide-output]
----
+:tags: [hide-output]
+
 print(C)
 ```
 
@@ -1518,9 +1501,8 @@ Note that the `for` loop takes much longer than the broadcasting operation.
 Compare the results to check your answer
 
 ```{code-cell} python3
----
-tags: [hide-output]
----
+:tags: [hide-output]
+
 print(D)
 ```
 

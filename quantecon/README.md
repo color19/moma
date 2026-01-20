@@ -29,4 +29,4 @@ These lectures are developed by and belong to [QuantEcon](https://quantecon.org/
 
 ## Modifications
 
-Minimal changes for reproducibility only. Any modifications are documented in commit messages.
+Minimal changes were made for MyST compatibility.

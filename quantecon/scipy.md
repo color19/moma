@@ -10,13 +10,6 @@ kernelspec:
 ---
 
 (sp)=
-```{raw} jupyter
-<div id="qe-notebook-header" align="right" style="text-align:right;">
-        <a href="https://quantecon.org/" title="quantecon.org">
-                <img style="width:250px;display:inline;" width="250px" src="https://assets.quantecon.org/img/qe-menubar-logo.svg" alt="QuantEcon">
-        </a>
-</div>
-```
 
 # {index}`SciPy <single: SciPy>`
 
@@ -588,7 +581,7 @@ print(f"The Monte Carlo option price is {P:3f}")
 ```{exercise}
 :label: sp_ex1
 
-In {ref}`this lecture <functions>`, we discussed the concept of {ref}`recursive function calls <recursive_functions>`.
+Recall the concept of recursive function calls.
 
 Try to write a recursive implementation of the homemade bisection function {ref}`described above <bisect_func>`.
 

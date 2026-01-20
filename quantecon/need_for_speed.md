@@ -10,13 +10,6 @@ kernelspec:
 ---
 
 (speed)=
-```{raw} jupyter
-<div id="qe-notebook-header" align="right" style="text-align:right;">
-        <a href="https://quantecon.org/" title="quantecon.org">
-                <img style="width:250px;display:inline;" width="250px" src="https://assets.quantecon.org/img/qe-menubar-logo.svg" alt="QuantEcon">
-        </a>
-</div>
-```
 
 # Python for Scientific Computing
 
@@ -51,9 +44,8 @@ In this introductory lecture, we'll discuss the following topics:
 In addition to what's in Anaconda, this lecture will need
 
 ```{code-cell} ipython
----
-tags: [hide-output]
----
+:tags: [hide-output]
+
 !pip install quantecon
 ```
 
@@ -343,7 +335,7 @@ The core benefits are
 The idea of vectorization dates back to MATLAB, which uses vectorization extensively.
 
 
-```{figure} /_static/lecture_specific/need_for_speed/matlab.png
+```{figure} _static/lecture_specific/need_for_speed/matlab.png
 ```
 
 
@@ -507,8 +499,8 @@ The two most important types of hardware accelerators are
 GPUs were originally designed for rendering graphics, which requires performing
 the same operation on many pixels simultaneously.
 
-```{figure} /_static/lecture_specific/need_for_speed/geforce.png
-:scale: 40
+```{figure} _static/lecture_specific/need_for_speed/geforce.png
+:width: 40%
 ```
 
 Scientists and engineers realized that this same architecture --- many simple
@@ -553,8 +545,8 @@ automatically detect and use available GPUs with minimal code changes.
 
 For larger-scale problems, servers containing multiple GPUs (often 4-8 GPUs per server) are increasingly common.
 
-```{figure} /_static/lecture_specific/need_for_speed/dgx.png
-:scale: 40
+```{figure} _static/lecture_specific/need_for_speed/dgx.png
+:width: 40%
 ```
 
 
