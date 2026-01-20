@@ -1,6 +1,24 @@
-# QuantEcon Lectures
+---
+authors:
+  - name: QuantEcon Team
+    url: https://quantecon.org
+license: BSD-3-Clause
+github: https://github.com/QuantEcon/lecture-python-programming.myst
+description: >-
+  Lectures on scientific computing with Python from the QuantEcon project,
+  covering NumPy, SciPy, Matplotlib, and performance optimization.
+keywords:
+  - scientific computing
+  - Python
+  - QuantEcon
+  - economics
+tags:
+  - reference
+---
 
-This directory contains MyST Markdown source files from the [QuantEcon Python Programming](https://python-programming.quantecon.org/) lecture series, specifically the **Foundations of Scientific Computing** section.
+# QuantEcon
+
+This directory contains MyST Markdown source files from the [QuantEcon Python Programming](https://python-programming.quantecon.org/) lecture series.
 
 ## Why Local Copies?
 

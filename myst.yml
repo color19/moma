@@ -43,10 +43,10 @@ project:
     - title: Notes
       children:
         - file: notes/lecture_01.md
-    - title: QuantEcon
+    - file: quantecon/README.md
+      title: QuantEcon
       children:
-        - file: quantecon/README.md
-          title: Foundations of Scientific Computing
+        - title: Foundations of Scientific Computing
           children:
             - file: quantecon/need_for_speed.md
             - file: quantecon/numpy.md

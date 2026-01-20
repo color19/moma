@@ -7,6 +7,23 @@ kernelspec:
   display_name: Python 3
   language: python
   name: python3
+authors:
+  - name: QuantEcon Team
+    url: https://quantecon.org
+license: BSD-3-Clause
+github: https://github.com/QuantEcon/lecture-python-programming.myst
+description: >-
+  Scientific computing tools in SciPy including optimization, integration,
+  interpolation, linear algebra, and statistical distributions.
+keywords:
+  - SciPy
+  - optimization
+  - integration
+  - interpolation
+  - statistics
+tags:
+  - scipy
+  - scientific-computing
 ---
 
 (sp)=

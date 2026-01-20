@@ -7,6 +7,25 @@ kernelspec:
   display_name: Python 3
   language: python
   name: python3
+authors:
+  - name: QuantEcon Team
+    url: https://quantecon.org
+license: BSD-3-Clause
+github: https://github.com/QuantEcon/lecture-python-programming.myst
+description: >-
+  Why Python is slow and how scientific libraries accelerate code through
+  vectorization, JIT compilation, and parallelization on CPUs and GPUs.
+keywords:
+  - vectorization
+  - JIT compilation
+  - parallelization
+  - GPU computing
+  - NumPy
+  - Numba
+  - JAX
+tags:
+  - performance
+  - scientific-computing
 ---
 
 (speed)=

@@ -7,6 +7,23 @@ kernelspec:
   display_name: Python 3
   language: python
   name: python3
+authors:
+  - name: QuantEcon Team
+    url: https://quantecon.org
+license: BSD-3-Clause
+github: https://github.com/QuantEcon/lecture-python-programming.myst
+description: >-
+  Creating publication-quality figures with Matplotlib using the object-oriented
+  API, subplots, 3D plots, customization, and style sheets.
+keywords:
+  - Matplotlib
+  - visualization
+  - plotting
+  - figures
+  - graphs
+tags:
+  - matplotlib
+  - visualization
 ---
 
 (matplotlib)=
