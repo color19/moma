@@ -65,10 +65,14 @@ function Add-ToPath {
         [string]$Directory,
         [string]$Scope  # "User" or "Machine"
     )
-    
+
     $currentPath = [System.Environment]::GetEnvironmentVariable("Path", $Scope)
-    
-    if ($currentPath -split ';' -contains $Directory) {
+    if (-not $currentPath) { $currentPath = "" }
+
+    # Case-insensitive comparison for Windows paths
+    $pathEntries = $currentPath -split ';' | Where-Object { $_ } | ForEach-Object { $_.ToLower().TrimEnd('\') }
+    $dirLower = $Directory.ToLower().TrimEnd('\')
+    if ($pathEntries -contains $dirLower) {
         Write-Info "$Directory already in $Scope PATH"
         return $true
     }
@@ -444,5 +448,91 @@ Write-Host "  3. In your project folder, run: uv sync"
 
 Write-Host "`nIf problems persist, run as Administrator:" -ForegroundColor Yellow
 Write-Host "  powershell -ExecutionPolicy Bypass -File install-uv-windows.ps1 -SystemWide" -ForegroundColor White
+
+# --- Setup Auto-Venv Activation ---
+
+Write-Host "`n========================================" -ForegroundColor Cyan
+Write-Host "  AUTO-VENV ACTIVATION SETUP" -ForegroundColor Cyan
+Write-Host "========================================`n" -ForegroundColor Cyan
+
+Write-Step "Setting up automatic venv activation..."
+
+$profilePath = $PROFILE.CurrentUserCurrentHost
+$profileDir = Split-Path $profilePath -Parent
+
+# Create profile directory if it doesn't exist
+if (-not (Test-Path $profileDir)) {
+    New-Item -ItemType Directory -Path $profileDir -Force | Out-Null
+    Write-Info "Created profile directory: $profileDir"
+}
+
+# Define the auto-venv activation function
+$autoVenvCode = @'
+
+# --- Auto-activate .venv when entering directory (added by uv installer) ---
+function Set-LocationWithVenv {
+    param([string]$Path)
+
+    # Call the original Set-Location (handle cd with no argument -> go to $HOME)
+    if ($Path) {
+        Microsoft.PowerShell.Management\Set-Location $Path
+    } else {
+        Microsoft.PowerShell.Management\Set-Location $HOME
+    }
+
+    # Check for .venv in the new directory
+    $venvActivate = Join-Path $PWD ".venv\Scripts\Activate.ps1"
+    if (Test-Path $venvActivate) {
+        if (-not $env:VIRTUAL_ENV -or $env:VIRTUAL_ENV -ne (Join-Path $PWD ".venv")) {
+            & $venvActivate
+            Write-Host "[venv] Activated .venv" -ForegroundColor Green
+        }
+    }
+}
+
+# Override cd and Set-Location to use our function
+Set-Alias -Name cd -Value Set-LocationWithVenv -Option AllScope -Scope Global -Force
+Set-Alias -Name Set-Location -Value Set-LocationWithVenv -Option AllScope -Scope Global -Force
+
+# Also check on profile load (for when terminal opens in a project directory)
+$venvActivate = Join-Path $PWD ".venv\Scripts\Activate.ps1"
+if (Test-Path $venvActivate) {
+    & $venvActivate
+    Write-Host "[venv] Activated .venv" -ForegroundColor Green
+}
+# --- End auto-venv activation ---
+'@
+
+# Check if already added to profile
+$profileExists = Test-Path $profilePath
+$alreadyAdded = $false
+
+if ($profileExists) {
+    $profileContent = Get-Content $profilePath -Raw -ErrorAction SilentlyContinue
+    if ($profileContent -and $profileContent -match "Auto-activate \.venv when entering directory") {
+        $alreadyAdded = $true
+    }
+}
+
+if ($alreadyAdded) {
+    Write-Info "Auto-venv activation already configured in PowerShell profile"
+} else {
+    try {
+        # Append to profile (create if doesn't exist)
+        Add-Content -Path $profilePath -Value $autoVenvCode -Force
+        Write-Success "Added auto-venv activation to PowerShell profile"
+        Write-Info "Profile location: $profilePath"
+        Write-Host @"
+
+  Auto-venv activation is now enabled!
+  When you 'cd' into a directory with a .venv folder,
+  the virtual environment will be activated automatically.
+
+"@ -ForegroundColor White
+    } catch {
+        Write-Fail "Could not update PowerShell profile: $_"
+        Write-Host "  You can manually add auto-venv by editing: $profilePath" -ForegroundColor Yellow
+    }
+}
 
 Write-Host "`n"

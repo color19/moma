@@ -39,8 +39,14 @@ powershell -ExecutionPolicy Bypass -File diagnose-uv-windows.ps1
 # 1. Create a directory at C:\uv
 New-Item -ItemType Directory -Path "C:\uv" -Force
 
-# 2. Download latest uv directly
-$arch = "x86_64"  # or "i686" for 32-bit
+# 2. Download latest uv directly (auto-detect architecture)
+$arch = switch ([System.Runtime.InteropServices.RuntimeInformation]::ProcessArchitecture) {
+    "Arm64" { "aarch64" }
+    "X64"   { "x86_64" }
+    "X86"   { "i686" }
+    default { if ([Environment]::Is64BitOperatingSystem) { "x86_64" } else { "i686" } }
+}
+Write-Host "Detected architecture: $arch"
 $releaseInfo = Invoke-RestMethod -Uri "https://api.github.com/repos/astral-sh/uv/releases/latest"
 $asset = $releaseInfo.assets | Where-Object { $_.name -like "uv-$arch-pc-windows-msvc.zip" } | Select-Object -First 1
 Invoke-WebRequest -Uri $asset.browser_download_url -OutFile "$env:TEMP\uv.zip"
@@ -126,8 +132,14 @@ Remove-Item -Recurse -Force "C:\uv" -ErrorAction SilentlyContinue
 # 2. Create clean directory
 New-Item -ItemType Directory -Path "C:\uv" -Force
 
-# 3. Download latest release using GitHub API (more reliable)
-$arch = "x86_64"  # or "i686" for 32-bit systems
+# 3. Download latest release using GitHub API (auto-detect architecture)
+$arch = switch ([System.Runtime.InteropServices.RuntimeInformation]::ProcessArchitecture) {
+    "Arm64" { "aarch64" }
+    "X64"   { "x86_64" }
+    "X86"   { "i686" }
+    default { if ([Environment]::Is64BitOperatingSystem) { "x86_64" } else { "i686" } }
+}
+Write-Host "Detected architecture: $arch"
 $releaseInfo = Invoke-RestMethod -Uri "https://api.github.com/repos/astral-sh/uv/releases/latest"
 $asset = $releaseInfo.assets | Where-Object { $_.name -like "uv-$arch-pc-windows-msvc.zip" } | Select-Object -First 1
 Write-Host "Downloading: $($asset.name)"
@@ -186,6 +198,62 @@ When a student has issues:
    ```
 
 4. Have them **sign out and sign back in** to Windows (this refreshes all PATH variables system-wide)
+
+## Setting Up Auto-Venv Activation
+
+The installer script automatically sets this up, but you can add it manually to your PowerShell profile:
+
+**Step 1:** Find your profile path:
+```powershell
+echo $PROFILE
+```
+
+**Step 2:** Edit the profile (create if it doesn't exist):
+```powershell
+notepad $PROFILE
+```
+
+**Step 3:** Add this code:
+```powershell
+# Auto-activate .venv when entering directory
+function Set-LocationWithVenv {
+    param([string]$Path)
+
+    # Call the original Set-Location (handle cd with no argument -> go to $HOME)
+    if ($Path) {
+        Microsoft.PowerShell.Management\Set-Location $Path
+    } else {
+        Microsoft.PowerShell.Management\Set-Location $HOME
+    }
+
+    # Check for .venv in the new directory
+    $venvActivate = Join-Path $PWD ".venv\Scripts\Activate.ps1"
+    if (Test-Path $venvActivate) {
+        if (-not $env:VIRTUAL_ENV -or $env:VIRTUAL_ENV -ne (Join-Path $PWD ".venv")) {
+            & $venvActivate
+            Write-Host "[venv] Activated .venv" -ForegroundColor Green
+        }
+    }
+}
+
+# Override cd and Set-Location
+Set-Alias -Name cd -Value Set-LocationWithVenv -Option AllScope -Scope Global -Force
+Set-Alias -Name Set-Location -Value Set-LocationWithVenv -Option AllScope -Scope Global -Force
+
+# Check on profile load
+$venvActivate = Join-Path $PWD ".venv\Scripts\Activate.ps1"
+if (Test-Path $venvActivate) {
+    & $venvActivate
+    Write-Host "[venv] Activated .venv" -ForegroundColor Green
+}
+```
+
+**Step 4:** Reload your profile:
+```powershell
+. $PROFILE
+```
+
+Now when you `cd` into a directory with a `.venv` folder, the virtual environment will be activated automatically.
 
 ## Additional Resources
 
