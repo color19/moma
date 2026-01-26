@@ -4,8 +4,16 @@
 name: MyST GitHub Pages Deploy
 on:
   push:
-    # Runs on pushes targeting the default branch
     branches: [main]
+    paths:
+      - '**.md'
+      - '**.qmd'
+      - 'myst.yml'
+      - '_quarto.yml'
+      - 'pyproject.toml'
+      - 'theme/**'
+      - '.github/workflows/deploy.yml'
+  workflow_dispatch:  # Allow manual trigger
 env:
   # `BASE_URL` determines, relative to the root of the domain, the URL that your site is served from.
   # E.g., if your site lives at `https://mydomain.org/myproject`, set `BASE_URL=/myproject`.
@@ -31,10 +39,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Setup Pages
-        uses: actions/configure-pages@v3
+        uses: actions/configure-pages@v5
       - uses: actions/setup-node@v4
         with:
-          node-version: 18.x
+          node-version: 20.x
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
@@ -48,11 +56,13 @@ jobs:
       - name: Build MyST site
         run: myst build --html
       - name: Build Quarto slides
-        run: quarto render slides/ --output-dir _build/html
+        run: quarto render slides/ --output-dir _build/html/slides
       - name: Copy theme assets for slides
-        run: cp -r theme _build/html/theme
+        run: |
+          rm -rf _build/html/theme
+          cp -r theme _build/html/theme
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v4
         with:
           path: './_build/html'
       - name: Deploy to GitHub Pages
