@@ -2,7 +2,7 @@
 title: "Intertemporal Choice"
 subtitle: "Life Cycle Models, Labor Supply, OLG, and the Envelope Condition"
 format: revealjs
-date: 2026-02-02
+date: 2025-02-03
 pyodide:
   packages:
     - numpy
@@ -282,21 +282,15 @@ plt.show()
 
 ## Setup: Consumption and Leisure
 
-Utility depends on both consumption $c_t$ and leisure $z_t$:
-
-$$u(c_t, z_t)$$
+Utility depends on both consumption $c_t$ and leisure $z_t$: $u(c_t, z_t)$
 
 **Constraints:**
 
-- Time allocation: $\ell_t + z_t = 1$ (labor + leisure = 1)
-- Labor income: $y_t = W_t \ell_t = W_t(1 - z_t)$
+- Time allocation: $\ell_t + z_t = 1$
+- Labor income: $y_t = W_t(1 - z_t)$
 - Expenditure: $x_t = c_t + z_t W_t$
 
-**First order condition:**
-
-$$W_t = \frac{u^z}{u^c}$$
-
-The wage equals the marginal rate of substitution between leisure and consumption.
+**FOC:** $W_t = u^z / u^c$ (wage = MRS between leisure and consumption)
 
 ## Stylized Facts on Labor Supply
 
@@ -356,15 +350,9 @@ With CRRA outer utility $f(\chi) = \chi^{1-\rho}/(1-\rho)$:
 
 $$\frac{c_2}{c_1} = (R\beta)^{1/\rho} \left(\frac{W_2}{W_1}\right)^{-\alpha(1-\rho)/\rho}$$
 
-**Log utility** ($\rho = 1$) eliminates the wage effect on consumption growth:
+**Log utility** ($\rho = 1$): consumption growth $c_2/c_1 = R\beta$ (no wage effect)
 
-$$c_2/c_1 = R\beta$$
-
-Labor supply profile:
-
-$$\frac{1-\ell_2}{1-\ell_1} = \frac{R\beta \, W_1}{W_2}$$
-
-Work harder when wages are higher: the intertemporal substitution of labor.
+**Labor supply:** $\displaystyle\frac{1-\ell_2}{1-\ell_1} = \frac{R\beta \, W_1}{W_2}$ (work harder when wages are higher)
 
 ## Log Utility Consumption Level
 
@@ -513,17 +501,11 @@ where $k_t = K_t / \mathcal{N}_t$ is capital per young worker.
 
 The young consumer maximizes $u(c_{1,t}) + \beta \, u(c_{2,t+1})$.
 
-**Euler equation:**
+**Euler equation:** $u'(c_{1,t}) = \beta R_{t+1} u'(c_{2,t+1})$
 
-$$u'(c_{1,t}) = \beta R_{t+1} u'(c_{2,t+1})$$
+With **log utility**: $c_{1,t} = W_{1,t}/(1+\beta)$ and $a_{1,t} = W_{1,t} \cdot \beta/(1+\beta)$
 
-With **log utility** ($\rho = 1$):
-
-$$c_{1,t} = \frac{W_{1,t}}{1+\beta}$$
-
-$$a_{1,t} = W_{1,t} \cdot \frac{\beta}{1+\beta}$$
-
-The saving rate $\frac{\beta}{1+\beta}$ is constant, a strong prediction of log utility.
+The saving rate $\beta/(1+\beta)$ is constant (a strong prediction of log utility).
 
 ## Capital Accumulation Dynamics
 
@@ -531,13 +513,9 @@ Since $k_{t+1} = a_{1,t}/N$ (assets per young worker, adjusted for population gr
 
 $$k_{t+1} = \underbrace{\frac{(1-\varepsilon)\beta}{N(1+\beta)}}_{\equiv \, \mathcal{Q}} \cdot k_t^\varepsilon$$
 
-This is a **nonlinear first-order difference equation** in per-capita capital.
+This is a nonlinear first-order difference equation in $k$.
 
-The derivative:
-
-$$\frac{dk_{t+1}}{dk_t} = \varepsilon \mathcal{Q} \, k_t^{\varepsilon - 1}$$
-
-Since $\varepsilon < 1$, the mapping is concave and converges monotonically.
+Since $\varepsilon < 1$, the mapping is concave and converges monotonically to a unique steady state.
 
 ## Code: OLG Phase Diagram
 
@@ -547,7 +525,7 @@ import matplotlib.pyplot as plt
 
 epsilon = 0.33
 beta = 0.96
-N = 1.02
+N = 2.5  # Per-generation: ~3% annual growth compounded over 30 years
 Q = (1 - epsilon) * beta / (N * (1 + beta))
 
 k = np.linspace(0.01, 0.6, 200)
@@ -594,7 +572,7 @@ import matplotlib.pyplot as plt
 epsilon = 0.33
 
 beta_vals = np.linspace(0.8, 1.0, 200)
-N = 1.02
+N = 2.5
 Q_vals = (1 - epsilon) * beta_vals / (N * (1 + beta_vals))
 k_ss = Q_vals**(1 / (1 - epsilon))
 
@@ -606,7 +584,7 @@ axes[0].set_ylabel(r'Steady-state capital $\bar{k}$')
 axes[0].set_title('More patient $\\Rightarrow$ more capital')
 axes[0].grid(True, alpha=0.3)
 
-N_vals = np.linspace(1.0, 1.1, 200)
+N_vals = np.linspace(1.5, 4.0, 200)  # Per-generation growth factors
 beta_fix = 0.96
 Q_N = (1 - epsilon) * beta_fix / (N_vals * (1 + beta_fix))
 k_ss_N = Q_N**(1 / (1 - epsilon))
@@ -665,31 +643,23 @@ A social planner maximizes welfare across generations:
 
 $$V_t = \beta \, u(c_{2,t}) + \sum_{n=0}^{\infty} \beth^n v_{t+n}$$
 
-where the Hebrew letter $\beth$ (beth) is the social planner's discount factor. The resource constraint is:
+where $\beth$ (beth) is the social discount factor.
 
-$$\underbrace{K_t + F(K_t, \mathcal{N}_t)}_{\text{Sources}} = \underbrace{K_{t+1} + \mathcal{N}_t c_{1,t} + \mathcal{N}_{t-1} c_{2,t}}_{\text{Uses}}$$
+**Resource constraint:** $K_t + F(K_t, \mathcal{N}_t) = K_{t+1} + \mathcal{N}_t c_{1,t} + \mathcal{N}_{t-1} c_{2,t}$
 
-The socially optimal steady state satisfies:
-
-$$1 + f'(\bar{k}^*) = N \beth^{-1}$$
+**Optimal steady state:** $1 + f'(\bar{k}^*) = N \beth^{-1}$
 
 ## Dynamic Efficiency and the Golden Rule
 
-Per-capita steady-state consumption:
+Per-capita steady-state consumption: $\bar{c} = f(\bar{k}) - n\bar{k}$
 
-$$\bar{c} = f(\bar{k}) - n\bar{k}$$
-
-The **Golden Rule** maximizes $\bar{c}$: $f'(\bar{k}^{**}) = n$, yielding:
-
-$$\bar{k}^{**} = (n/\varepsilon)^{1/(\varepsilon - 1)}$$
+**Golden Rule** maximizes $\bar{c}$: $f'(\bar{k}^{**}) = n \;\Rightarrow\; \bar{k}^{**} = (n/\varepsilon)^{1/(\varepsilon - 1)}$
 
 Three capital levels to compare:
 
 - $\bar{k}$: competitive equilibrium
 - $\bar{k}^*$: social optimum (depends on $\beth$)
-- $\bar{k}^{**}$: golden rule (maximizes steady-state consumption)
-
-There is "no particular relationship" between $\bar{k}$ and $\bar{k}^*$.
+- $\bar{k}^{**}$: golden rule (maximizes $\bar{c}$)
 
 ## Code: Golden Rule and Dynamic Efficiency
 
@@ -698,10 +668,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 epsilon = 0.33
-n = 0.02
-N = 1 + n
+N = 2.5  # Per-generation
+n = N - 1  # Net growth rate
 
-k = np.linspace(0.01, 1.5, 300)
+k = np.linspace(0.001, 0.7, 300)
 f_k = k**epsilon
 c_ss = f_k - n * k
 
@@ -726,7 +696,7 @@ ax.fill_betweenx([0, c_gold * 1.1], k_gold, k_zero,
 ax.set_xlabel(r'Steady-state capital $\bar{k}$')
 ax.set_ylabel(r'Steady-state consumption $\bar{c}$')
 ax.set_title('Golden Rule and dynamic efficiency')
-ax.set_xlim(0, 1.5)
+ax.set_xlim(0, 0.7)
 ax.legend(fontsize=8)
 ax.grid(True, alpha=0.3)
 plt.show()
@@ -739,8 +709,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 epsilon = 0.33
-n = 0.02
-N = 1 + n
+N = 2.5  # Per-generation
+n = N - 1
 beta = 0.96
 
 Q = (1 - epsilon) * beta / (N * (1 + beta))

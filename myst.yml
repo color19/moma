@@ -45,13 +45,16 @@ project:
   toc:
     - file: README.md
     - file: syllabus.md
-    - title: Notes
+    - file: notes/README.md
+      title: Notes
       children:
         - file: notes/lecture_01.md
         - file: notes/lecture_02.md
+        - file: notes/lecture_03.md
     - file: slides/README.md
       title: Slides
-    - title: Notebooks
+    - file: notebooks/README.md
+      title: Notebooks
       children:
         - file: notebooks/consumption_two_period.md
         - file: notebooks/olg_extra.md

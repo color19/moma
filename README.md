@@ -10,6 +10,49 @@ This course offers a rigorous introduction to modern macroeconomic theory, build
 
 The course emphasizes both analytical and computational methods, with extensive use of mathematical derivations complemented by numerical analysis using Python.
 
+## Getting Started
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/jhu-econ/moma.git
+cd moma
+```
+
+### 2. Install uv
+
+Follow the instructions at [docs.astral.sh/uv](https://docs.astral.sh/uv/getting-started/installation/), or:
+
+```bash
+# macOS/Linux
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Windows (PowerShell)
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+```
+
+### 3. Install dependencies
+
+```bash
+uv sync
+```
+
+### 4. Preview the site
+
+```bash
+uv run myst start
+```
+
+### 5. Run notebooks interactively
+
+```bash
+uv run jupyter lab
+```
+
+Then right-click any `.md` file and select **Open With > Notebook**.
+
+For slides, see [slides/README.md](slides/README.md) for Quarto installation.
+
 ## Topics
 
 - Consumption theory and dynamic optimization

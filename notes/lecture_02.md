@@ -164,9 +164,12 @@ These readings introduce the consumption theory foundations for Chapter 1, which
 ## Homework
 
 :::{attention} Assignment: DataCamp
-Complete the assigned DataCamp module(s) by the posted deadline on Canvas. Check Canvas for the specific assignment details.
+Complete [Intermediate Python](https://app.datacamp.com/learn/courses/intermediate-python) on DataCamp.
+
+**Due:** Check Canvas for the deadline.
 :::
 
 :::{tip} Course Materials
-The course website at [jhu-econ.github.io/moma](https://jhu-econ.github.io/moma) contains all lecture notes and materials.
+- Course website: [jhu-econ.github.io/moma](https://jhu-econ.github.io/moma)
+- Textbook: [A Gentle Introduction to Intertemporal Choice](https://jhu-econ.github.io/intertemporal-choice/)
 :::

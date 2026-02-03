@@ -349,8 +349,17 @@ Publish your local `~/github/moma` folder to GitHub:
 **Due:** Before Lecture 2
 :::
 
+:::{attention} Assignment 2: DataCamp
+Complete [Intro to Python for Data Science](https://app.datacamp.com/learn/courses/intro-to-python-for-data-science) on DataCamp.
+
+**Due:** Check Canvas for the deadline.
+:::
+
 :::{tip} Course Materials
-The course website at [jhu-econ.github.io/moma](https://jhu-econ.github.io/moma) contains all lecture notes and materials. Your personal `moma` repository is your workspace for assignments and experimentation.
+- Course website: [jhu-econ.github.io/moma](https://jhu-econ.github.io/moma)
+- Textbook: [A Gentle Introduction to Intertemporal Choice](https://jhu-econ.github.io/intertemporal-choice/)
+
+Your personal `moma` repository is your workspace for assignments and experimentation.
 :::
 
 :::{seealso} Additional Resources
