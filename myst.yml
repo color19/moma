@@ -41,6 +41,7 @@ project:
   jupyter: true
   bibliography:
     - quantecon/references.bib
+    - notebooks/references.bib
   toc:
     - file: README.md
     - file: syllabus.md
@@ -50,6 +51,9 @@ project:
         - file: notes/lecture_02.md
     - file: slides/README.md
       title: Slides
+    - title: Notebooks
+      children:
+        - file: notebooks/olg_extra.md
     - file: quantecon/README.md
       title: QuantEcon
       children:
