@@ -3,28 +3,12 @@ jupytext:
   text_representation:
     extension: .md
     format_name: myst
+    format_version: 0.13
+    jupytext_version: 1.19.1
 kernelspec:
-  display_name: Python 3
-  language: python
   name: python3
-authors:
-  - name: Alan Lujan
-    url: https://github.com/alanlujan91
-description: >-
-  The Diamond overlapping generations model with population growth:
-  competitive equilibrium, the social planner's problem, the Golden Rule,
-  and dynamic efficiency.
-keywords:
-  - OLG
-  - overlapping generations
-  - Diamond model
-  - population growth
-  - dynamic efficiency
-  - Golden Rule
-  - social planner
-tags:
-  - olg
-  - nonlinear
+  display_name: Python 3 (ipykernel)
+  language: python
 ---
 
 # The Diamond OLG Model
