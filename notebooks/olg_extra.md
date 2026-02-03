@@ -64,6 +64,12 @@ from scipy import optimize
 import matplotlib.pyplot as plt
 ```
 
+```{code-cell} ipython3
+from collections import namedtuple
+
+OLGModel = namedtuple('OLGModel', ['epsilon', 'beta', 'N', 'beth'])
+```
+
 ## Model Setup
 
 ### Demographics and Timing
@@ -152,9 +158,11 @@ R_t = \varepsilon \, k_t^{\varepsilon - 1}
 
 ```{code-cell} ipython3
 def wage(k, epsilon):
+    """Cobb-Douglas wage: marginal product of labor."""
     return (1 - epsilon) * k**epsilon
 
 def interest_rate(k, epsilon):
+    """Cobb-Douglas gross interest rate: marginal product of capital."""
     return epsilon * k**(epsilon - 1)
 ```
 
@@ -241,6 +249,7 @@ exactly offset each other.
 
 ```{code-cell} ipython3
 def savings_log(W, beta):
+    """Optimal savings under log utility."""
     return beta / (1 + beta) * W
 ```
 
@@ -289,9 +298,11 @@ from any positive initial condition.
 
 ```{code-cell} ipython3
 def Q_coefficient(epsilon, beta, N):
+    """Coefficient in the law of motion for capital."""
     return (1 - epsilon) * beta / (N * (1 + beta))
 
 def k_next(k, epsilon, beta, N):
+    """One-period law of motion for capital per young worker."""
     return Q_coefficient(epsilon, beta, N) * k**epsilon
 ```
 
@@ -313,6 +324,7 @@ and consumption in each period of life.
 
 ```{code-cell} ipython3
 def steady_state_competitive(epsilon, beta, N):
+    """Steady-state capital in the competitive equilibrium."""
     Q = Q_coefficient(epsilon, beta, N)
     return Q**(1 / (1 - epsilon))
 ```
@@ -326,7 +338,8 @@ passes through the origin, any positive initial capital stock
 converges monotonically to $\bar{k}$.
 
 ```{code-cell} ipython3
-epsilon, beta, N = 0.33, 0.96, 2.5
+model = OLGModel(epsilon=0.33, beta=0.96, N=2.5, beth=0.99)
+epsilon, beta, N = model.epsilon, model.beta, model.N
 
 k_bar = steady_state_competitive(epsilon, beta, N)
 k_grid = np.linspace(0, 0.15, 300)
@@ -382,7 +395,7 @@ N_vals = np.linspace(1.0, 4.0, 300)
 k_ss_vals = np.array([steady_state_competitive(epsilon, beta, Nv) for Nv in N_vals])
 
 fig, ax = plt.subplots()
-ax.plot(N_vals, k_ss_vals, 'r-', lw=2)
+ax.plot(N_vals, k_ss_vals, 'r-', lw=2, label=r'$\bar{k}$ vs $N$')
 ax.axvline(N, ls=':', color='gray', alpha=0.5)
 ax.set_xlabel(r'Population growth factor $N$')
 ax.set_ylabel(r'Steady-state capital $\bar{k}$')
@@ -474,6 +487,7 @@ planner would choose.
 
 ```{code-cell} ipython3
 def steady_state_social(epsilon, N, beth):
+    """Steady-state capital chosen by the social planner."""
     return ((N / beth - 1) / epsilon)**(1 / (epsilon - 1))
 
 beth = 0.99
@@ -529,6 +543,7 @@ With Cobb-Douglas production:
 
 ```{code-cell} ipython3
 def steady_state_golden(epsilon, n):
+    """Golden Rule capital stock maximizing steady-state consumption."""
     return (n / epsilon)**(1 / (epsilon - 1))
 ```
 
@@ -635,6 +650,75 @@ Under standard calibrations, however, the competitive equilibrium
 tends to be dynamically efficient.  As we will see in the exercises
 below, pushing $\bar{k}$ above $\bar{k}^{**}$ requires an
 implausibly large discount factor $\beta$.
+
+## CRRA Preferences
+
+The log-utility analysis above admits a closed-form savings function
+because income and substitution effects cancel exactly.  With general
+CRRA preferences $u(c) = c^{1-\gamma}/(1-\gamma)$, $\gamma > 0$,
+this cancellation no longer holds and the savings function depends on
+the interest rate.  The household's Euler equation gives optimal
+savings
+
+```{math}
+:label: crra_savings
+
+s_t = \frac{W_t}{1 + \beta^{-1/\gamma}\,R_{t+1}^{(\gamma-1)/\gamma}}
+```
+
+When $\gamma > 1$, a higher interest rate raises savings (the
+substitution effect dominates); when $\gamma < 1$, savings fall.
+At $\gamma = 1$ the expression reduces to the log-utility savings
+function [](#log_savings).
+
+Because $R_{t+1} = \varepsilon\,k_{t+1}^{\varepsilon-1}$ depends on
+$k_{t+1}$ itself, the law of motion $k_{t+1} = s_t / N$ is now an
+implicit equation.  We solve it numerically using
+`scipy.optimize.brentq`.  See {cite}`blanchard&fischer:text`,
+Chapter 3, for further discussion of the CRRA extension.
+
+```{code-cell} ipython3
+def savings_crra(W, R, beta, gamma):
+    """Optimal savings under CRRA utility with risk aversion gamma."""
+    return W / (1 + beta ** (-1 / gamma) * R ** ((gamma - 1) / gamma))
+
+
+def k_next_crra(k, epsilon, beta, N, gamma):
+    """Solve the implicit law of motion for k_{t+1} under CRRA preferences."""
+    def residual(k1):
+        R1 = interest_rate(k1, epsilon)
+        W = wage(k, epsilon)
+        return savings_crra(W, R1, beta, gamma) / N - k1
+    try:
+        return optimize.brentq(residual, 1e-12, k**epsilon * 2 + 0.5)
+    except ValueError:
+        return np.nan
+```
+
+```{code-cell} ipython3
+gamma_values = [0.5, 1.0, 2.0, 5.0]
+k_grid_crra = np.linspace(1e-4, 0.15, 300)
+
+fig, ax = plt.subplots(figsize=(6, 6))
+ax.plot(k_grid_crra, k_grid_crra, 'k-', lw=1, alpha=0.7, label=r'$45^\circ$ line')
+
+for gamma in gamma_values:
+    k1_vals = np.array([k_next_crra(kv, epsilon, beta, N, gamma)
+                        for kv in k_grid_crra])
+    lbl = rf'$\gamma = {gamma}$'
+    if gamma == 1.0:
+        lbl += ' (log)'
+    ax.plot(k_grid_crra, k1_vals, lw=2, label=lbl)
+
+ax.set_xlabel('$k_t$')
+ax.set_ylabel('$k_{t+1}$')
+ax.set_xlim(0, 0.15)
+ax.set_ylim(0, 0.15)
+ax.legend(frameon=False, fontsize=9)
+ax.grid(True, alpha=0.3)
+ax.set_title('Law of motion under CRRA preferences')
+plt.show()
+```
 
 ## Exercises
 

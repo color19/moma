@@ -54,6 +54,7 @@ project:
     - title: Notebooks
       children:
         - file: notebooks/olg_extra.md
+        - file: notebooks/consumption_two_period.md
     - file: quantecon/README.md
       title: QuantEcon
       children:
