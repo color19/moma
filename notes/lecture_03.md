@@ -71,3 +71,5 @@ If you are behind on previous DataCamp assignments, you may still complete them 
 - Course website: [jhu-econ.github.io/moma](https://jhu-econ.github.io/moma)
 - Textbook: [A Gentle Introduction to Intertemporal Choice](https://jhu-econ.github.io/intertemporal-choice/)
 :::
+
+i need to do homework! 
