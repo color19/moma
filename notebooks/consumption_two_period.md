@@ -210,6 +210,16 @@ substitution** (IES): it measures the percent change in the
 consumption ratio $c_2/c_1$ in response to a percent change in the
 intertemporal price $\mathsf{R}$.
 
+:::{note}
+When $\rho < 1$ (IES $> 1$), the consumer is willing to tolerate
+large swings in the consumption path in response to interest rate
+changes.  When $\rho > 1$ (IES $< 1$), the consumer prefers a smooth
+consumption path and responds little to intertemporal prices.  The
+log-utility case $\rho = 1$ (IES $= 1$) lies at the boundary: income
+and substitution effects exactly cancel, making consumption growth
+independent of the level of wealth.
+:::
+
 ## The Consumption Function
 
 Using the Euler equation to substitute $c_2$ in the IBC and solving
@@ -414,6 +424,17 @@ components:
 For most consumers, future labor income is the largest component of
 wealth, so the human wealth effect typically dominates.
 
+:::{note}
+{cite}`summersCapTax` argues that the human wealth effect is
+quantitatively the most important channel.  Because the present value
+of future labor income typically dwarfs financial wealth, a rise in
+interest rates reduces human wealth substantially, depressing
+consumption.  This helps explain why empirical estimates of the
+interest elasticity of saving tend to be small: the substitution
+effect and the human wealth effect work in opposite directions and
+largely offset each other.
+:::
+
 ## Comparative Statics
 
 How do $c_1$, $c_2$, and savings $a_1$ respond to changes in the
@@ -446,6 +467,14 @@ When $\rho$ is small (high IES), the substitution effect dominates:
 $c_1$ falls sharply as $\mathsf{R}$ rises.  When $\rho$ is large
 (low IES), income and human wealth effects dominate: $c_1$ is
 relatively insensitive to $\mathsf{R}$, or may even increase.
+
+:::{seealso}
+Part I developed the individual consumption-savings problem in partial
+equilibrium.  The
+[Diamond OLG Model](./olg_extra.md) notebook embeds this decision in
+a general equilibrium with production and capital accumulation, where
+one generation's savings become the next generation's capital stock.
+:::
 
 # Part II: Consumption and Labor Supply
 
@@ -727,6 +756,17 @@ This is the **intertemporal elasticity of labor supply puzzle**: the
 theory with log utility (IES = 1) predicts enormous variation in
 labor supply in response to predictable wage variation, while the
 data show very little.
+
+:::{important}
+The labor supply puzzle is not an artifact of log utility.  Any CRRA
+outer function with a Cobb-Douglas inner composite produces
+counterfactually large labor supply responses to predictable wage
+variation.  Resolving the puzzle requires either departing from
+Cobb-Douglas preferences (breaking the constant leisure share
+property), introducing frictions such as fixed costs of adjustment, or
+reinterpreting the model's "periods" as short enough that wage
+variation within a period is small.
+:::
 
 ```{code-cell} ipython3
 fig, ax = plt.subplots(figsize=(8, 5))

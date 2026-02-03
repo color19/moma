@@ -51,12 +51,31 @@ these three benchmarks relate to one another.  Along the way we
 introduce the concept of dynamic efficiency and explain why the
 first welfare theorem can fail in an OLG economy.
 
+:::{seealso}
+The individual consumption-savings problem that underlies each
+household's decision is developed in
+[Two-Period Consumption and Labor Supply](./consumption_two_period.md).
+This notebook embeds that decision in a general equilibrium with
+production and capital accumulation.
+:::
+
 We use a per-generation calibration in which each model period
 represents roughly 30 years.  The baseline parameters are
 $\varepsilon = 0.33$ (capital share), $\beta = 0.96$ (household
 discount factor), $N = 2.5$ (gross population growth, corresponding
 to approximately 3% annual growth compounded over 30 years), and
 $\beth = 0.99$ (social planner discount factor).
+
+:::{note}
+A per-generation discount factor of $\beta = 0.96$ is *not* the same
+as an annual discount factor of 0.96.  The annual equivalent is
+$\beta^{1/30} \approx 0.9986$, corresponding to an annual discount
+rate of roughly 0.14%.  Similarly, $N = 2.5$ means the population
+roughly triples each 30-year generation, well above modern
+developed-country growth rates.  These values are chosen for
+pedagogical clarity; the qualitative results hold for a wide range of
+calibrations.
+:::
 
 ```{code-cell} ipython3
 import numpy as np
@@ -248,6 +267,16 @@ A useful feature of log utility is that savings depend only on the
 wage and the discount factor, not on the interest rate.  This occurs
 because the income and substitution effects of a change in $R_{t+1}$
 exactly offset each other.
+
+:::{tip}
+The interest-rate independence of savings under log utility is the
+reason this specification is so widely used in OLG models.  It makes
+the law of motion for capital a simple function of the current capital
+stock alone, yielding closed-form steady states and clean comparative
+statics.  With general CRRA preferences, the law of motion becomes an
+implicit equation that must be solved numerically (see
+[CRRA Preferences](#crra-preferences) below).
+:::
 
 ```{code-cell} ipython3
 def savings_log(W, beta):
@@ -663,12 +692,16 @@ straightforward: by accumulating less capital, society wastes fewer
 resources on a factor whose return is below the growth rate of the
 economy.
 
-This observation has a striking implication.  In the dynamically
-inefficient region, the competitive equilibrium is not Pareto
-efficient across generations.  There exists a feasible reallocation
-that makes at least one generation strictly better off without
-harming any other generation.  This is a genuine failure of the
-first welfare theorem, not merely a statement about steady states.
+This observation has a striking implication.
+
+:::{important}
+In the dynamically inefficient region, the competitive equilibrium is
+not Pareto efficient across generations.  There exists a feasible
+reallocation that makes at least one generation strictly better off
+without harming any other.  This is a genuine failure of the first
+welfare theorem, arising because the OLG economy has a countable
+infinity of agents.
+:::
 
 The failure arises because the OLG economy has a countable infinity
 of agents (one generation per period, stretching into the infinite
@@ -689,8 +722,17 @@ The log-utility analysis above admits a closed-form savings function
 because income and substitution effects cancel exactly.  With general
 CRRA preferences $u(c) = c^{1-\gamma}/(1-\gamma)$, $\gamma > 0$,
 this cancellation no longer holds and the savings function depends on
-the interest rate.  The household's Euler equation gives optimal
-savings
+the interest rate.
+
+:::{seealso}
+The CRRA utility function and the role of the intertemporal elasticity
+of substitution $1/\gamma$ are developed in detail in
+[Two-Period Consumption and Labor Supply](./consumption_two_period.md),
+where the comparative statics of $\rho$ (the notation used there for
+the CRRA parameter) on consumption growth are explored.
+:::
+
+The household's Euler equation gives optimal savings
 
 ```{math}
 :label: crra_savings
