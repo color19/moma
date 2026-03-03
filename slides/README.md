@@ -7,6 +7,10 @@ Lecture slides are posted here each week. Each module covers a different topic i
 - [M01: Foundations of Scientific Computing](/slides/m01/foundations-scientific-computing-slides.html)
 - M02: Snow day (no class)
 - [M03: Intertemporal Choice](/slides/m03/intertemporal-choice-slides.html)
+- [M04: Consumption Theory](/slides/m04/consumption-theory-slides.html)
+- [M05: Advanced Consumption Models](/slides/m05/advanced-consumption-slides.html)
+- [M06: Risk and Consumption](/slides/m06/risk-and-consumption-slides.html)
+- [M07: Asset Pricing](/slides/m07/asset-pricing-slides.html)
 
 ## Building Slides Locally
 

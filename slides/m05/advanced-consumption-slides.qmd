@@ -1,0 +1,399 @@
+---
+title: "Advanced Consumption Models"
+subtitle: "Habit Formation, Durable Goods, and Quasi-Hyperbolic Discounting"
+format: revealjs
+date: 2025-02-17
+pyodide:
+  packages:
+    - numpy
+    - matplotlib
+---
+
+# Habit Formation
+
+## Utility with Habits
+
+Consider a consumer whose past consumption affects current utility (Carroll, 2000). The goal is to solve
+
+$$\max \sum_{n=0}^{T-t} \beta^n \, u(c_{t+n}, h_{t+n})$$
+
+where the habit stock $h_t$ enters the utility function with $u^h < 0$: higher past consumption raises the reference point, making any given level of current consumption less satisfying.
+
+The dynamic budget constraint is the usual
+
+$$m_{t+1} = (m_t - c_t)R + y_{t+1}$$
+
+## How Habits Evolve
+
+**Simple version:** last period's consumption becomes this period's habit stock:
+
+$$h_{t+1} = c_t$$
+
+**General version:** habits adjust partially toward consumption:
+
+$$h_{t+1} = h_t + \lambda(c_t - h_t)$$
+
+When $\lambda = 1$, the general version reduces to the simple one.
+
+In either case, a consumer who has been spending lavishly finds it painful to cut back, because today's utility is judged against yesterday's standard.
+
+## The Bellman Equation
+
+With two state variables $m_t$ and $h_t$, Bellman's equation becomes
+
+$$v_t(m_t, h_t) = \max_{c_t} \left\{ u(c_t, h_t) + \beta \, v_{t+1}((m_t - c_t)R + y_{t+1}, \, c_t) \right\}$$
+
+Note the second argument of $v_{t+1}$: tomorrow's habit stock is $h_{t+1} = c_t$, so the choice of $c_t$ affects the future through two channels: it reduces resources via $m_{t+1}$ and raises the habit stock via $h_{t+1}$.
+
+## First Order Condition
+
+Differentiating with respect to $c_t$ yields
+
+$$u^c_t = \beta\left(R \, v^m_{t+1} - v^h_{t+1}\right)$$
+
+Without habits, $v^h_{t+1} = 0$ and we recover the standard FOC. With habits, the right-hand side is larger (since $v^h_{t+1} < 0$), so a higher marginal utility is needed. The consumer who accounts for habits chooses a *lower* level of consumption.
+
+**Intuition:** spending a dollar today not only depletes resources but also raises the bar against which future consumption is judged.
+
+## Envelope Condition for $m_t$
+
+Applying the envelope theorem, treating $c_t$ as constant when differentiating with respect to $m_t$:
+
+$$v^m_t = \beta R \, v^m_{t+1}$$
+
+This is identical to the standard envelope result. An extra dollar of wealth still raises value by the return on saving, regardless of habits.
+
+## Envelope Condition for $h_t$
+
+Differentiating Bellman's equation with respect to the habit state, again treating $c_t$ as constant:
+
+$$v^h_t = u^h_t$$
+
+The marginal value of a higher habit stock equals the direct marginal utility effect. Habits enter only through today's utility, not through the budget constraint.
+
+## Combining the Optimality Conditions
+
+From the FOC and the envelope results:
+
+$$v^m_t = u^c_t + \beta \, v^h_{t+1} = u^c_t + \beta \, u^h_{t+1}$$
+
+Rolling forward one period and substituting into $v^m_t = \beta R \, v^m_{t+1}$:
+
+$$\boxed{u^c_t + \beta \, u^h_{t+1} = R\beta \left[u^c_{t+1} + \beta \, u^h_{t+2}\right]}$$
+
+When $u^h = 0$, this reduces to the standard Euler equation $u'(c_t) = R\beta \, u'(c_{t+1})$.
+
+## A Specific Utility Form
+
+Suppose utility depends on consumption *relative to* habits:
+
+$$u(c, h) = f(c - \alpha h)$$
+
+where $\alpha \in (0, 1)$ is the **habit strength**. Define $z_t = c_t - \alpha h_t$. The derivatives are $u^c = f'$ and $u^h = -\alpha f'$.
+
+With $h_{t+1} = c_t$, the surplus evolves as
+
+$$z_t = c_t - \alpha c_{t-1}$$
+
+## Serial Correlation in Consumption Growth
+
+Assuming $f(z) = z^{1-\rho}/(1-\rho)$ and a perfect-foresight solution where $f'$ grows at a constant rate, one can show (after log-linearization):
+
+$$\Delta \log c_{t+1} \approx \frac{1-\alpha}{\rho}\log(R\beta) + \alpha \, \Delta \log c_t$$
+
+Habit formation predicts that consumption growth is **positively serially correlated**: a period of rising consumption tends to be followed by further rises, because the habit stock adjusts gradually.
+
+When $\alpha = 0$, we recover the standard result with no serial correlation.
+
+## Code: Habit Formation and Consumption Dynamics
+
+```{pyodide}
+import numpy as np
+import matplotlib.pyplot as plt
+
+T, rho = 80, 2.0
+alpha_vals = [0.0, 0.4, 0.8]
+fig, axes = plt.subplots(1, 2, figsize=(10, 4))
+corrs = []
+for alpha in alpha_vals:
+    np.random.seed(42)  # reset seed so all alphas face identical shock sequence
+    dc = np.zeros(T)
+    shock = np.random.normal(0, 0.02, T)
+    for t in range(1, T):
+        dc[t] = alpha * dc[t-1] + shock[t]
+    axes[0].plot(np.cumsum(dc), lw=1.5, label=rf'$\alpha = {alpha}$')
+    corrs.append(np.corrcoef(dc[1:-1], dc[2:])[0, 1])
+axes[0].set_xlabel('Period')
+axes[0].set_ylabel(r'$\log c_t$ (cumulative)')
+axes[0].set_title('Consumption paths under habit formation')
+axes[0].legend(fontsize=8)
+axes[0].grid(True, alpha=0.3)
+for lbl, corr in zip([rf'$\alpha={a}$' for a in alpha_vals], corrs):
+    axes[1].bar(lbl, corr, width=0.5)
+axes[1].set_ylabel(r'Autocorrelation of $\Delta \log c$')
+axes[1].set_title('Habits generate serial correlation')
+axes[1].grid(True, alpha=0.3, axis='y')
+plt.tight_layout()
+plt.show()
+```
+
+# Durable Goods
+
+## What Makes a Good "Durable"?
+
+A durable good provides utility over multiple periods rather than being consumed immediately. The consumer maximizes
+
+$$\max \sum_{s=t}^{T} \beta^{s-t} u(c_s, d_s)$$
+
+where $c_s$ is nondurable consumption and $d_s$ is the *stock* of the durable good.
+
+**Examples:** housing, cars, appliances. The key distinction is that *spending* on durables (a flow) differs from the *stock* that yields utility.
+
+## Stock Accumulation
+
+The durable stock evolves as
+
+$$d_{t+1} = (1 - \delta)d_t + x_{t+1}$$
+
+where $x_t$ is period-$t$ expenditure and $\delta$ is the depreciation rate. A lower $\delta$ means a more durable good.
+
+The budget constraint subtracts both nondurable and durable expenditures:
+
+$$m_{t+1} = (m_t - c_t - x_t)R + y_{t+1}$$
+
+## The Two-Control Bellman Equation
+
+Treating $d_t$ (stock) as the control instead of $x_t$ (expenditure), with $x_t = d_t - (1-\delta)d_{t-1}$:
+
+$$v_t(m_t, d_{t-1}) = \max_{c_t, d_t} \left\{ u(c_t, d_t) + \beta \, v_{t+1}(m_{t+1}, d_t) \right\}$$
+
+where $m_{t+1} = (m_t - c_t - d_t + (1-\delta)d_{t-1})R + y_{t+1}$.
+
+This problem has two control variables and two state variables.
+
+## First Order Conditions
+
+**With respect to $c_t$:**
+
+$$u^c_t = R\beta \, v^m_{t+1}$$
+
+**With respect to $d_t$:**
+
+$$u^d_t = R\beta \, v^m_{t+1} - \beta \, v^d_{t+1}$$
+
+The nondurables FOC is standard. The durables FOC balances the marginal utility of the durable stock against both the opportunity cost of funds ($R\beta \, v^m_{t+1}$) and the continuation value of the stock ($\beta \, v^d_{t+1}$).
+
+## Envelope Conditions
+
+**For $m_t$** (treating both controls as constant):
+
+$$v^m_t = R\beta \, v^m_{t+1}$$
+
+**For $d_{t-1}$** (the durable stock inherited from last period):
+
+$$v^d_t = (1-\delta) R\beta \, v^m_{t+1} = (1-\delta) v^m_t$$
+
+## Interpreting $v^d = (1 - \delta) v^m$
+
+**When $\delta = 1$:** the "durable" depreciates completely, so $v^d_t = 0$. Last period's stock has no effect on current value, exactly as for a nondurable.
+
+**When $\delta = 0$:** the good never depreciates, so $v^d_t = v^m_t$. An extra unit of the indestructible durable is worth exactly one unit of wealth, because it can be costlessly converted back and forth.
+
+For intermediate values, $v^d_t$ is a fraction $(1-\delta)$ of the marginal value of wealth.
+
+## The Intratemporal Condition
+
+Combining the two FOCs with the envelope results:
+
+$$u^d_t = u^c_t - \frac{(1-\delta)}{R} u^c_t = \frac{r + \delta}{R} \, u^c_t$$
+
+$$\boxed{u^d_t = \left(\frac{r + \delta}{R}\right) u^c_t}$$
+
+The marginal utility of the durable *in the current period* is lower than the marginal utility of the nondurable. Why? Because the durable yields utility in future periods too. You do not buy a car because it is worth \$20,000 today; you buy it because its discounted lifetime value exceeds \$20,000.
+
+## Cobb-Douglas Utility
+
+With $u(c, d) = \frac{(c^{1-\alpha} d^{\alpha})^{1-\rho}}{1-\rho}$, the intratemporal condition implies a constant ratio:
+
+$$\frac{d}{c} = \frac{\alpha}{1-\alpha} \cdot \frac{R}{r + \delta} \equiv \gamma$$
+
+Whenever nondurable consumption changes, the durable *stock* adjusts proportionally.
+
+## Why Durable Spending Is Volatile
+
+Since *expenditure* is $x_t = d_t - (1-\delta)d_{t-1}$, a small change in $c$ triggers a large adjustment in $x$. If nondurable consumption grows by a fraction $\epsilon_t$ (so $c_t/c_{t-1} = 1 + \epsilon_t$) from a previously stable level:
+
+$$\frac{x_t}{x_{t-1}} = \frac{\epsilon_t + \delta}{\delta}$$
+
+For a good with low depreciation (say $\delta = 0.05$), a 5% consumption adjustment doubles durable spending. The stock-to-income ratio is much larger than the spending-to-income ratio, so even small income revisions cause large spending swings.
+
+## Code: Durables Spending Volatility
+
+```{pyodide}
+import numpy as np
+import matplotlib.pyplot as plt
+
+T, r, R, alpha_d = 60, 0.04, 1.04, 0.3
+delta_vals = [0.05, 0.15, 0.50]
+np.random.seed(42)
+shocks = np.random.normal(0, 2, T)  # same shocks for all delta
+fig, axes = plt.subplots(1, 2, figsize=(10, 4))
+for delta in delta_vals:
+    gamma = (alpha_d / (1 - alpha_d)) * (R / (r + delta))
+    c = np.ones(T) * 100
+    for t in range(1, T):
+        c[t] = c[t-1] + shocks[t]
+    d = gamma * c
+    x = np.diff(d) + delta * d[:-1]
+    axes[0].plot(x / x[0] * 100, lw=1.5,
+                 label=rf'$\delta = {delta}$ ($\gamma = {gamma:.1f}$)')
+axes[0].set_xlabel('Period')
+axes[0].set_ylabel('Durable spending (index)')
+axes[0].set_title('Lower depreciation = more volatile spending')
+axes[0].legend(fontsize=8)
+axes[0].grid(True, alpha=0.3)
+# Analytical volatility ratio: approximately 1/delta for small delta
+delta_range = np.linspace(0.02, 0.50, 200)
+axes[1].plot(delta_range, 1 / delta_range, 'b-', lw=2)
+axes[1].set_xlabel(r'Depreciation rate $\delta$')
+axes[1].set_ylabel(r'$\sigma(\Delta x / x) \, / \, \sigma(\Delta c / c)$')
+axes[1].set_title('Spending volatility ratio: approximately $1/\delta$')
+axes[1].grid(True, alpha=0.3)
+plt.tight_layout()
+plt.show()
+```
+
+## Frequency and Correlation
+
+The degree of correlation between nondurables and durables spending depends on the time horizon. For a quarterly depreciation rate of 5%, the good almost fully depreciates over 10 years (40 quarters: $0.95^{40} \approx 0.12$).
+
+Over intervals long enough for the stock to have depreciated, durables spending growth matches nondurables spending growth, because both are effectively nondurable at that frequency.
+
+**At high frequencies:** durables spending is far more volatile and weakly correlated with nondurables. **At low frequencies:** the two converge.
+
+# Quasi-Hyperbolic Discounting
+
+## Present Bias
+
+Standard exponential discounting treats all future periods symmetrically: the discount between periods $t+5$ and $t+6$ is the same $\beta$ as between $t$ and $t+1$.
+
+Laibson (1997) proposes that something special happens "now." Brain regions associated with emotional reward activate for immediate gratification but not for future prospects (McClure et al., 2004).
+
+The quasi-hyperbolic model captures this by adding an extra discount factor $\delta_h < 1$ that applies only to the step from "now" to "all of the future."
+
+## Two Value Functions
+
+Given a period-$t+1$ value function $v_{t+1}(m_{t+1})$ and any consumption rule $\chi_t$:
+
+$$v_t(m_t; \chi_t) = u(\chi_t(m_t)) + \beta \, \mathbb{E}_t[v_{t+1}((m_t - \chi_t(m_t))R + y_{t+1})]$$
+
+$$\mathfrak{v}_t(m_t; \chi_t) = u(\chi_t(m_t)) + \delta_h\beta \, \mathbb{E}_t[v_{t+1}((m_t - \chi_t(m_t))R + y_{t+1})]$$
+
+The first function $v_t$ discounts the future by $\beta$ (the "long-run self"). The second $\mathfrak{v}_t$ discounts by $\delta_h\beta$ (the "present-biased self").
+
+## Two Consumption Functions
+
+The standard consumer and the Laibson consumer solve different problems:
+
+$$\mathbf{c}_t(m_t) = \arg\max_c \left\{ u(c) + \beta \, \mathbb{E}_t[v_{t+1}] \right\}$$
+
+$$\mathfrak{c}_t(m_t) = \arg\max_c \left\{ u(c) + \delta_h\beta \, \mathbb{E}_t[v_{t+1}] \right\}$$
+
+Since $\delta_h < 1$, the Laibson consumer values the future less *from today's perspective* and therefore consumes more. Laibson calibrates $\delta_h \approx 0.7$ at an annual frequency.
+
+## The Modified Euler Equation
+
+The envelope theorem applied to $\mathfrak{v}_t$ gives $\mathfrak{v}^m_t = u'(c_t)$, and the FOC gives $u'(c_t) = \delta_h R\beta \, \mathbb{E}_t[v^m_{t+1}]$.
+
+A useful identity links the two value functions:
+
+$$\delta_h \, v_t = \mathfrak{v}_t - (1 - \delta_h) \, u(\mathfrak{c}_t(m_t))$$
+
+Differentiating and substituting:
+
+$$\boxed{u'(c_t) = \mathfrak{v}^m_t - (1 - \delta_h) \, u'(c_t) \, \mathfrak{c}^m_t}$$
+
+## Interpreting the Modified Euler Equation
+
+When $\delta_h = 1$, we recover the standard Euler equation: $u'(c_t) = \mathfrak{v}^m_t$.
+
+When $\delta_h < 1$, three things follow:
+
+1. The Laibson term $(1-\delta_h) \, u'(c_t) \, \mathfrak{c}^m_t$ **reduces** the right-hand side, so a lower $u'(c_t)$ (higher $c_t$) satisfies the equation. The present-biased consumer spends more.
+
+2. The magnitude of the bias depends on the **MPC** $\mathfrak{c}^m_t$. If the MPC is small, present bias barely matters.
+
+3. The model captures the psychological tension: "eating dessert this one time won't make me fat" (small one-period cost), "but if I always give in, the consequences are large" (perpetual deviation).
+
+## Code: Present Bias and Overconsumption
+
+```{pyodide}
+import numpy as np
+import matplotlib.pyplot as plt
+
+R, beta, rho, T = 1.04, 0.96, 2.0, 40
+fig, axes = plt.subplots(1, 2, figsize=(10, 4))
+for dlta in [1.0, 0.85, 0.7]:
+    Phi_R_d = (dlta * R * beta) ** (1 / rho) / R
+    kappa = np.ones(T)
+    for t in range(T - 2, -1, -1):
+        kappa[t] = (1 - Phi_R_d) / (1 - Phi_R_d ** (T - t))
+    m, c = np.zeros(T), np.zeros(T)
+    m[0] = 10.0
+    for t in range(T):
+        o = m[t] + sum(R**(-n) for n in range(T - t))
+        c[t] = kappa[t] * o
+        if t < T - 1:
+            m[t+1] = (m[t] - c[t]) * R + 1.0
+    lbl = rf'$\delta_h = {dlta}$' if dlta < 1 else r'Standard ($\delta_h = 1$)'
+    axes[0].plot(c, lw=2, label=lbl)
+axes[0].set_xlabel('Period')
+axes[0].set_ylabel('Consumption $c_t$')
+axes[0].set_title('Present bias raises early consumption')
+axes[0].legend(fontsize=8)
+axes[0].grid(True, alpha=0.3)
+mpc_vals = np.linspace(0.01, 0.5, 200)
+for dlta in [0.7, 0.85]:
+    axes[1].plot(mpc_vals, (1 - dlta) * mpc_vals, lw=2,
+                 label=rf'$\delta_h = {dlta}$')
+axes[1].set_xlabel(r'MPC $\mathfrak{c}^m_t$')
+axes[1].set_ylabel(r'Bias factor $(1-\delta_h) \cdot \mathfrak{c}^m_t$')
+axes[1].set_title('Present bias grows with the MPC')
+axes[1].legend(fontsize=8)
+axes[1].grid(True, alpha=0.3)
+plt.tight_layout()
+plt.show()
+```
+
+## When Does Present Bias Matter?
+
+The modified Euler equation reveals that present bias is most consequential when:
+
+| Condition | MPC is... | Present bias is... |
+|---|---|---|
+| Young, little wealth | High | Large |
+| Wealthy, long horizon | Low | Small |
+| Liquidity constrained | High | Large |
+| Unconstrained buffer-stock | Moderate | Moderate |
+
+A retiree with a 30-year horizon and substantial savings has a low MPC, so quasi-hyperbolic discounting barely distorts behavior. A young worker living paycheck to paycheck has a high MPC, and the temptation to overspend is strong.
+
+# Summary
+
+## Key Takeaways (1/2)
+
+- **Habit formation:** utility depends on consumption relative to a habit stock; the modified Euler equation is $u^c_t + \beta u^h_{t+1} = R\beta[u^c_{t+1} + \beta u^h_{t+2}]$, and the calibrated model predicts positively autocorrelated consumption growth
+- **Durable goods:** the intratemporal condition $u^d = [(r+\delta)/R] \, u^c$ equates the marginal utility of durables (adjusted for future service) to that of nondurables; with Cobb-Douglas utility the stock-to-nondurables ratio is constant
+
+## Key Takeaways (2/2)
+
+- **Durable spending volatility:** because the stock-to-income ratio exceeds the flow-to-income ratio, even small permanent income shocks produce large swings in durable expenditure
+- **Quasi-hyperbolic discounting:** the extra discount factor $\delta_h \approx 0.7$ captures present bias; the modified Euler equation shows that the distortion scales with the MPC, so present bias matters most for liquidity-constrained or low-wealth consumers
+
+## How the Topics Connect
+
+All three models extend the baseline consumption-Euler framework from Module 4:
+
+- **Habits** add a second state variable that makes the *value* of consumption depend on the past, generating persistence in consumption growth
+- **Durables** add a second control variable that separates the *stock* yielding utility from the *flow* of spending, explaining why durable expenditure is so volatile
+- **Laibson** modifies the *discount structure* itself, showing that time inconsistency matters most precisely when the MPC is high, that is, when the consumer is most constrained

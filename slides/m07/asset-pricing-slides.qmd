@@ -1,0 +1,494 @@
+---
+title: "Asset Pricing"
+subtitle: "Lucas Trees, Portfolio Choice, the C-CAPM, and Rational Bubbles"
+format: revealjs
+date: 2025-03-03
+---
+
+# The Lucas Asset Pricing Model
+
+## The Question
+
+What determines the price of a financial asset?
+
+The answer from standard finance is "the present discounted value of future cash flows." The Lucas (1978) model derives this result from first principles: optimizing consumers, market clearing, and rational expectations. Along the way it reveals *which* discount rate to use and *why*, questions that standard finance takes as given.
+
+The model also shows that seemingly obvious intuitions about asset prices can be wrong once general equilibrium effects are accounted for.
+
+## An Endowment Economy
+
+Lucas considers an economy of identical consumers whose only assets are identical infinitely-lived trees. Aggregate output is the fruit that falls from the trees, and it cannot be stored.
+
+Because $u'(c) > 0$ for all $c$, every unit of fruit is eaten:
+
+$$c_t N_t = d_t K_t$$
+
+where $c_t$ is consumption per person, $N_t$ is population, $K_t$ is the stock of trees, and $d_t$ is the exogenous output of fruit per tree.
+
+This is an **endowment economy**: output arrives without deliberate action. No investment, no production decisions. The stock of trees is exogenous: you cannot consume a little less fruit and have more trees next period.
+
+## The Market for Trees
+
+If a perfect capital market for trees exists, the price $P_t$ must be such that each identical consumer is content with their current holdings. (If everyone wanted to buy more, supply is fixed, so that price cannot be an equilibrium.)
+
+The price $P_t$ is the **ex-dividend** price (the sale occurs after this period's fruit has been collected). Total resources for consumer $i$ in period $t$ are
+
+$$d_t k_t^i + P_t k_t^i$$
+
+divided between consumption $c_t^i$ and the purchase of trees for next period at price $P_t$:
+
+$$k_{t+1}^i P_t + c_t^i = d_t k_t^i + P_t k_t^i$$
+
+## The Individual Consumer's Problem
+
+Consumer $i$ maximizes
+
+$$v(m_t^i) = \max \; \mathbb{E}_t^i \left[\sum_{n=0}^{\infty} \beta^n u(c_{t+n}^i)\right]$$
+
+subject to the budget constraint. Writing in Bellman form and differentiating, the FOC is
+
+$$u'(c_t^i) = \beta \, \mathbb{E}_t^i \left[\underbrace{\frac{P_{t+1} + d_{t+1}}{P_t}}_{\equiv \mathbf{R}_{t+1}} v'(m_{t+1}^i)\right]$$
+
+where the **return factor** $\mathbf{R}_{t+1}$ measures next period's total payoff (resale value plus dividend) per dollar invested.
+
+## From FOC to Pricing Equation
+
+The envelope theorem gives $v'(m_{t+1}^i) = u'(c_{t+1}^i)$, so the FOC becomes
+
+$$u'(c_t^i) = \beta \, \mathbb{E}_t^i \left[u'(c_{t+1}^i) \frac{P_{t+1} + d_{t+1}}{P_t}\right]$$
+
+Dividing both sides by $u'(c_t^i)$ and multiplying by $P_t$:
+
+$$P_t = \beta \, \mathbb{E}_t^i \left[\frac{u'(c_{t+1}^i)}{u'(c_t^i)} (P_{t+1} + d_{t+1})\right]$$
+
+The price today equals the expected discounted value of next period's total payoff (price plus dividend), where the discount factor depends on how much the consumer's marginal utility changes. When times will be tough (low $c_{t+1}$, high $u'$), dividends are worth more.
+
+## Aggregation
+
+Since all consumers are identical, $c_t^i = c_t$ for all $i$. With population and tree stock normalized to one, market clearing requires $c_t = d_t$: all fruit is eaten.
+
+Substituting $d_t$ for $c_t$:
+
+$$P_t = \beta \, \mathbb{E}_t \left[\frac{u'(d_{t+1})}{u'(d_t)} (P_{t+1} + d_{t+1})\right]$$
+
+This is the key equation of the model. The individual $i$ superscripts vanish: in this representative-agent economy, the equilibrium price depends only on the aggregate dividend process.
+
+## The Stochastic Discount Factor
+
+Define the **stochastic discount factor** (SDF):
+
+$$\mathcal{M}_{t,t+n} = \beta^n \frac{u'(d_{t+n})}{u'(d_t)}$$
+
+It is "stochastic" because shocks between $t$ and $t+n$ determine $d_{t+n}$, and it "discounts" because it measures the rate at which agents value future payoffs. When $d_{t+n}$ is low (bad times), $u'(d_{t+n})$ is high, so a dollar in bad times is worth more. The pricing equation becomes
+
+$$P_t = \mathbb{E}_t \left[\mathcal{M}_{t,t+1}(P_{t+1} + d_{t+1})\right]$$
+
+The SDF is the central object of modern asset pricing theory. Every asset in the economy is priced by the same SDF.
+
+## Price as PDV of Dividends
+
+A corresponding pricing equation holds in every future period. Substituting $P_{t+1} = \mathbb{E}_{t+1}[\mathcal{M}_{t+1,t+2}(P_{t+2}+d_{t+2})]$ into the equation for $P_t$, and using the law of iterated expectations ($\mathbb{E}_t[\mathbb{E}_{t+1}[\cdot]] = \mathbb{E}_t[\cdot]$) and the fact that $\mathcal{M}_{t,t+2} = \mathcal{M}_{t,t+1}\mathcal{M}_{t+1,t+2}$:
+
+$$P_t = \mathbb{E}_t \left[\mathcal{M}_{t,t+1} d_{t+1} + \mathcal{M}_{t,t+2} d_{t+2} + \mathcal{M}_{t,t+3} d_{t+3} + \cdots\right]$$
+
+provided that a transversality condition holds (we examine what happens when it fails in the section on bubbles).
+
+The price equals the **present discounted value** of future dividends, and now we know *which* discount factor to use: the SDF $\mathcal{M}_{t,t+n}$, which depends on preferences and the dividend process.
+
+## The Gordon Formula
+
+If dividends grow at constant factor $G$ forever, the PDV is a geometric series:
+
+$$P_t^* = d_t \sum_{s=1}^{\infty} (G/R)^s = d_t \cdot \frac{G/R}{1 - G/R} \approx \frac{d_t}{r - g}$$
+
+where $r$ and $g$ are log counterparts and the approximation uses $R/G \approx 1 + r - g$ for small $r$ and $g$.
+
+This is the **Gordon growth model**, the workhorse of equity valuation. The discount rate should be $R = R^f + \phi$, where $\phi$ is the risk premium. A 1 percentage point drop in $r - g$ can have a dramatic effect on valuations: if $r - g$ falls from 4% to 3%, $P/d$ jumps from 25 to 33.
+
+## The Random Walk of Prices
+
+If a security price at time $t$ equals the rational expectation of some fundamental value $V^*$:
+
+$$P_t = \mathbb{E}_t[V^*], \qquad P_{t+1} = \mathbb{E}_{t+1}[V^*]$$
+
+Then $\mathbb{E}_t[P_{t+1} - P_t] = \mathbb{E}_t[\mathbb{E}_{t+1}[V^*]] - \mathbb{E}_t[V^*] = 0$
+
+by the law of iterated expectations. Price changes are driven only by the arrival of new information. Prices follow a martingale, which is why "beating the market" is difficult: all known information is already embedded in the price.
+
+## Specializing to CRRA Utility
+
+With CRRA utility $u(c) = c^{1-\rho}/(1-\rho)$, marginal utility is $u'(c) = c^{-\rho}$. Substituting into the pricing equation:
+
+$$\begin{aligned}
+P_t &= \beta \, \mathbb{E}_t \left[\frac{d_{t+1}^{-\rho}}{d_t^{-\rho}} (P_{t+1} + d_{t+1})\right] \\
+    &= \beta \, d_t^{\rho} \, \mathbb{E}_t \left[d_{t+1}^{-\rho}(P_{t+1} + d_{t+1})\right]
+\end{aligned}$$
+
+The term $d_t^{\rho}$ reflects the consumer's current situation: when $d_t$ is low (bad times today), $d_t^{\rho}$ is low, so prices are low; the consumer is too hungry to pay much for future dividends.
+
+## The Log Utility Solution
+
+With $\rho = 1$, divide both sides by $d_t$:
+
+$$\begin{aligned}
+\frac{P_t}{d_t} &= \beta \, \mathbb{E}_t\left[\frac{d_{t+1}^{-1}}{d_t^{-1}} \cdot d_t^{-1}(P_{t+1} + d_{t+1})\right] = \beta\,\mathbb{E}_t\left[1 + \frac{P_{t+1}}{d_{t+1}}\right] \\
+&= \beta\left(1 + \beta\left(1 + \beta\left(1 + \cdots\right)\right)\right) = \frac{\beta}{1-\beta}
+\end{aligned}$$
+
+Using $\beta = 1/(1+\vartheta)$, so $\beta/(1-\beta) = 1/\vartheta$:
+
+$$P_t = \frac{d_t}{\vartheta}$$
+
+The dividend-price ratio is always $d_t/P_t = \vartheta$. More patient consumers ($\vartheta$ small) bid up the price of trees.
+
+## Why Today's Price Depends Only on Today's Output
+
+This result is surprising: $P_t = d_t/\vartheta$ says that if the weather was bad this year but is expected to return to normal, the price does *not* reflect "normal" future fruit production.
+
+Two forces are at work when expected future dividends rise:
+
+1. **Higher expected future payoffs** push the price *up* (the numerator of the PDV is larger)
+2. **Lower future marginal utility** pushes the price *down* (future fruit is less valuable when there is plenty of it)
+
+With log utility, these income and substitution effects are of equal magnitude and opposite sign, so they exactly cancel. For $\rho \neq 1$, one effect dominates and the price *does* depend on expected future dividends.
+
+## IID Dividends with CRRA Utility
+
+When dividends are iid with $\log d_{t+n} \sim \mathcal{N}(-\sigma^2/2, \sigma^2)$ (mean one in levels), define $\tilde{d} \equiv \mathbb{E}_t[d_{t+n}^{1-\rho}]$. Because $d^{1-\rho}$ is lognormal, the lognormal moment formula gives
+
+$$\tilde{d} = e^{(1-\rho)(-\sigma^2/2) + (1-\rho)^2\sigma^2/2} = e^{\rho(\rho-1)\sigma^2/2}$$
+
+The pricing equation telescopes to $P_t = d_t^{\rho}\,\tilde{d}/\vartheta$, so
+
+$$\log P_t \approx \rho \log d_t + \rho(\rho-1)\sigma^2/2 - \log \vartheta$$
+
+## IID Dividends: Implications
+
+Two results follow for $\rho > 1$:
+
+**1. Asset prices are more volatile than dividends.** Since $\log P_t = \rho\log d_t + \text{const}$:
+
+$$\text{Var}(\log P) = \rho^2\,\text{Var}(\log d)$$
+
+With $\rho = 3$, price volatility is nine times dividend volatility.
+
+**2. Higher risk aversion raises the price-dividend ratio.** The $\rho(\rho-1)\sigma^2/2$ term is positive and increasing in $\rho$. More risk-averse consumers value the asset more highly in bad states, bidding up the price. This contradicts the common narrative that "increased risk aversion" causes asset prices to fall.
+
+## Random Walk Dividends with CRRA Utility
+
+When dividends follow a random walk ($\log(d_{t+1}/d_t) \sim \mathcal{N}(-\sigma^2/2, \sigma^2)$), the price-dividend ratio is constant and
+
+$$\log P_t \approx \log d_t - \log(\vartheta - \rho(\rho-1)\sigma^2/2)$$
+
+This requires $\vartheta > \rho(\rho-1)\sigma^2/2$: the agent must be impatient enough relative to the risk-adjusted growth of dividends for the price to be finite. Otherwise the PDV of dividends diverges.
+
+Compared to the IID case: the coefficient on $\log d_t$ drops from $\rho$ to 1, so $\text{Var}(\log P) = \text{Var}(\log d)$. Persistent dividends generate less price amplification because a high dividend today already signals high dividends tomorrow.
+
+## Returns and the Rate of Interest
+
+Decomposing the return factor $\mathbf{R}_{t+1}$:
+
+$$\mathbf{R}_{t+1} = 1 + \underbrace{\frac{\Delta P_{t+1}}{P_t}}_{\text{capital gain}} + \underbrace{\frac{d_{t+1}}{P_t}}_{\text{dividend yield}}$$
+
+In models where capital prices are constant (reproducible machines), all return variation comes from dividends, implying very low return volatility. This is at odds with the 15--20% annual standard deviation observed for stocks. The Lucas model, by allowing price fluctuations, can generate realistic return volatility.
+
+## The Fallacy of Composition
+
+Aristotle's "fallacy of composition" warns against assuming that what is true for each part must be true for the whole.
+
+In the Lucas model, any *individual* agent can save one more unit and receive $\mathbf{R}_{t+1}$ in extra future resources. But if *everyone* saves one more unit, aggregate future resources are unchanged (the trees produce the same fruit regardless). The "marginal product of capital" is $\mathbf{R}_{t+1}$ for any individual but **zero** for society.
+
+If everyone becomes more patient ($\vartheta$ falls), tree prices rise until the higher price restores each consumer's willingness to hold exactly the existing supply. The market clears through prices, not through real capital accumulation.
+
+# Portfolio Choice
+
+## CARA Portfolio Choice: Setup
+
+A consumer with CARA utility $u(c) = -\alpha^{-1}e^{-\alpha c}$ holds assets $a_{T-1}$ and must allocate an absolute dollar amount $S$ to a risky asset with normally distributed return $\mathbf{R}_T \sim \mathcal{N}(\mathbf{R}, \sigma^2)$, with the remainder in a safe asset earning $R^f < \mathbf{R}$.
+
+Terminal consumption is $c_T = a_{T-1}R^f + (\mathbf{R}_T - R^f)S$, and we define the expected excess return as $\phi = \mathbf{R} - R^f$.
+
+## CARA Portfolio Choice: Derivation
+
+Expected utility is
+
+$$\begin{aligned}
+\mathbb{E}[u(c_T)] &= -\alpha^{-1}e^{-\alpha a_{T-1}R^f}\,\mathbb{E}\!\left[e^{-\alpha(\mathbf{R}_T - R^f)S}\right] \\
+  &= -\alpha^{-1}e^{-\alpha a_{T-1}R^f}\,e^{-\alpha S\phi + \alpha^2 S^2 \sigma^2/2}
+\end{aligned}$$
+
+where the second line uses the moment-generating function of the normal: if $z \sim \mathcal{N}(\mu,\sigma^2)$ then $\mathbb{E}[e^z] = e^{\mu + \sigma^2/2}$. Since the expression is negative, maximizing it is equivalent to maximizing $S\phi - \alpha S^2\sigma^2/2$. Taking the FOC:
+
+$$\phi = \alpha S \sigma^2 \qquad \Longrightarrow \qquad S = \frac{\phi}{\alpha \sigma^2}$$
+
+## CARA Portfolio Choice: Implications
+
+The optimal dollar investment in the risky asset increases with $\phi$ (reward) and decreases with $\alpha$ (risk aversion) and $\sigma^2$ (risk). So far, so sensible.
+
+But the amount invested does **not** depend on total wealth $a_{T-1}$. Warren Buffett and Homer Simpson should hold the same dollar position in stocks. All of Buffett's excess wealth goes into the safe asset. This follows from the CARA property: absolute risk aversion $-u''/u' = \alpha$ is the same at every wealth level.
+
+This implausible prediction is a fundamental limitation of CARA utility and one reason economists prefer CRRA, where the *share* (not the dollar amount) allocated to the risky asset is independent of wealth.
+
+## CRRA Portfolio Choice: Setup
+
+Merton (1969) and Samuelson (1969) study a consumer with CRRA utility $u(c) = c^{1-\rho}/(1-\rho)$ who invests proportion $\varsigma$ of wealth in a risky asset with lognormal return and the rest in a riskfree asset earning $R^f = e^{r^f}$.
+
+The log portfolio return is well approximated by
+
+$$r^{p}_{t+1} \approx r^f + \varsigma \, \phi_{t+1} + \varsigma(1-\varsigma)\sigma^2_r/2$$
+
+where $\phi_{t+1} = r_{t+1} - r^f + \sigma^2_r/2$ is the log excess return premium (the $\sigma^2_r/2$ term adjusts for the difference between the log mean and the mean of the log).
+
+## CRRA Portfolio Choice: Derivation Sketch
+
+After applying the lognormal moment formula, the problem reduces to a mean-variance tradeoff (more expected return versus more variance penalized by risk aversion):
+
+$$\max_{\varsigma}\;\; \varsigma\,\phi - \rho\,\varsigma^2 \sigma^2_r/2$$
+
+The FOC gives
+
+$$\varsigma = \frac{\phi}{\rho \, \sigma^2_r}$$
+
+The consumer allocates more to the risky asset when $\phi$ is larger, $\rho$ is lower, or $\sigma^2_r$ is lower.
+
+## The Sharpe Ratio and Portfolio Returns
+
+Substituting $\varsigma = \phi/(\rho\sigma^2_r)$ into the expected excess portfolio return $\varsigma\phi$:
+
+$$\varsigma \, \phi = \frac{\phi^2}{\rho\,\sigma^2_r} = \frac{(\phi/\sigma_r)^2}{\rho}$$
+
+The ratio $\phi/\sigma_r$ is the **Sharpe ratio**: the excess return per unit of risk. The consumer chooses a portfolio earning a premium proportional to the *squared* Sharpe ratio and inversely proportional to risk aversion.
+
+## A Surprising Variance Result
+
+The variance of the optimally-chosen portfolio is $\varsigma^2 \sigma^2_r$. Substituting:
+
+$$\varsigma^2 \sigma^2_r = \frac{\phi^2}{\rho^2\sigma^2_r} = \frac{(\phi/\rho)^2}{\sigma^2_r}$$
+
+This is *smaller* when $\sigma^2_r$ is *larger*. The consumer does not merely restore the original portfolio variance when risk rises; she reduces exposure so aggressively that portfolio risk actually *falls*.
+
+If she scaled down $\varsigma$ just enough to keep portfolio variance constant, she would bear the same risk for a lower expected return. That cannot be optimal, so she reduces exposure further.
+
+# Consumption with Optimal Portfolio Choice
+
+## MPC with Unavoidable Risk (Review from Lecture 06)
+
+For a consumer whose *only* asset has lognormal return with log mean $\tilde{r}$ and variance $\sigma^2_{\tilde{r}}$, the approximate MPC is
+
+$$\kappa \approx \underbrace{\tilde{r}}_{\text{income}} - \underbrace{\rho^{-1}(\tilde{r} - \vartheta)}_{\text{substitution}} - \underbrace{(\rho - 1)\sigma^2_{\tilde{r}}/2}_{\text{precautionary}}$$
+
+When the risk is unavoidable, higher $\sigma^2_{\tilde{r}}$ reduces $\kappa$ for $\rho > 1$: the consumer saves more as a precaution against bad returns. The precautionary term is increasing in both risk aversion and risk.
+
+## Adding Portfolio Choice
+
+Now suppose the consumer can split wealth between the risky asset and a riskfree asset earning $r^f$. From the Merton-Samuelson formula, $\varsigma = \phi/(\rho \sigma^2_r)$. The variance of the optimally-chosen portfolio is
+
+$$\sigma^2_{r^p} = \varsigma^2 \sigma^2_r = \frac{(\phi/\rho)^2}{\sigma^2_r}$$
+
+Substituting $\sigma^2_{r^p}$ for $\sigma^2_{\tilde{r}}$ in the precautionary term:
+
+$$-(\rho-1)\frac{\sigma^2_{r^p}}{2} = -(\rho-1)\frac{(\phi/\rho)^2}{2\sigma^2_r}$$
+
+## The Precautionary Reversal
+
+As $\sigma^2_r$ increases, the precautionary term $-(\rho-1)(\phi/\rho)^2/(2\sigma^2_r)$ *shrinks* in absolute value (the denominator grows). The consumer's flight from the risky asset is so effective (because $\varsigma$ enters the portfolio variance as a *squared* term) that the riskiness of the *portfolio* actually *declines* when the underlying risky asset gets riskier.
+
+The full MPC after portfolio optimization:
+
+$$\kappa \approx r^f - \rho^{-1}(r^f - \vartheta) + (\rho-1)\frac{(\phi/\rho)^2}{2\sigma^2_r}$$
+
+Note the sign change on the last term: it is now *positive*, reflecting the net of all three effects after substitution.
+
+## Three Effects of Increased Asset Risk
+
+| Channel | Effect on $\kappa$ | Mechanism |
+|---|---|---|
+| **Precautionary** | $\uparrow$ (saves *less*) | Portfolio rebalancing reduces portfolio risk |
+| **Income** | $\downarrow$ (lower portfolio return) | Consumer flees risky asset, earns less |
+| **Substitution** | $\uparrow$ (lower return $\Rightarrow$ less delay) | Lower portfolio return reduces incentive to wait |
+
+For $\rho > 1$, the income effect dominates: increased asset risk *reduces* consumption because the last term shrinks as $\sigma^2_r$ rises.
+
+## The Effect on Saving
+
+The "saving effect" (income minus consumption, $r^p - \kappa$) is
+
+$$r^p - \kappa \approx \rho^{-1}(r^f - \vartheta) + \frac{\rho+1}{2} \cdot \frac{\phi^2}{\sigma^2_r \rho^2}$$
+
+As $\sigma^2_r$ increases, the second term falls, so saving *falls*: expected portfolio income declines by more than consumption does.
+
+This is **not** purely a precautionary saving effect. With log utility ($\rho = 1$), the precautionary term vanishes entirely, yet portfolio and income effects still generate reduced saving.
+
+# The Consumption CAPM
+
+## The Question the C-CAPM Answers
+
+The Lucas model prices one asset (trees) in a pure exchange economy. The **Consumption Capital Asset Pricing Model** (C-CAPM) answers a broader question: in an economy with many assets, what determines the expected return on each one?
+
+The answer turns out to depend on a single variable: how much the asset's return covaries with aggregate consumption growth. This is the consumption-based version of the classic CAPM insight that only systematic risk is priced.
+
+## Joint Consumption-Portfolio Problem
+
+A representative agent solves
+
+$$\max \; u(c_t) + \mathbb{E}_t \left[\sum_{n=1}^{\infty} \beta^n u(c_{t+n})\right]$$
+
+subject to $m_{t+1} = (m_t - c_t)R^p_{t+1} + y_{t+1}$, where the portfolio return is
+
+$$R^p_{t+1} = \sum_i \omega_{t,i} \mathbf{R}_{t+1,i} + \left(1-\sum_i \omega_{t,i}\right)R^f$$
+
+and $\omega_{t,i}$ is the share invested in risky asset $i$, $\mathbf{R}_{t+1,i}$ is the return on asset $i$, and $R^f$ is the riskfree return.
+
+## The Two First-Order Conditions
+
+Differentiating the Bellman equation with respect to $c_t$ (consumption) and $\omega_{t,i}$ (portfolio share in asset $i$), and applying the envelope theorem ($v' = u'$):
+
+$$u'(c_t) = \mathbb{E}_t \left[\beta R^p_{t+1} u'(c_{t+1})\right]$$
+
+$$\mathbb{E}_t \left[(\mathbf{R}_{t+1,i} - R^f) u'(c_{t+1})\right] = 0 \quad \text{for every asset } i$$
+
+The first equation is the standard Euler equation. The second says: at the optimum, the expected excess return on each asset, weighted by marginal utility, is zero. You cannot improve welfare by tilting the portfolio toward any asset.
+
+## From FOC to Pricing Formula: Step 1
+
+Assume CRRA utility: $u'(c) = c^{-\rho}$. Divide the portfolio FOC by $c_t^{-\rho}$:
+
+$$\mathbb{E}_t\!\left[(c_{t+1}/c_t)^{-\rho}(\mathbf{R}_{t+1,i} - R^f)\right] = 0$$
+
+Now approximate. Since $\Delta c_{t+1}/c_t$ is small, $c_{t+1}/c_t \approx 1 + \Delta\log c_{t+1}$, and for small $z$, $(1+z)^{-\rho} \approx 1 - \rho z$. So:
+
+$$(c_{t+1}/c_t)^{-\rho} \approx 1 - \rho\,\Delta\log c_{t+1}$$
+
+## From FOC to Pricing Formula: Step 2
+
+Substituting into the FOC:
+
+$$\mathbb{E}_t\!\left[(1 - \rho\,\Delta\log c_{t+1})(\mathbf{R}_{t+1,i} - R^f)\right] \approx 0$$
+
+Using $\mathbb{E}[xy] = \mathbb{E}[x]\mathbb{E}[y] + \text{cov}(x,y)$:
+
+$$(1 - \rho\,\mathbb{E}_t[\Delta\log c_{t+1}])(\mathbb{E}_t[\mathbf{R}_{t+1,i}] - R^f) - \rho\,\text{cov}_t(\Delta\log c_{t+1},\,\mathbf{R}_{t+1,i}) = 0$$
+
+Since $\rho\,\mathbb{E}_t[\Delta\log c_{t+1}]$ is small relative to one, the denominator is approximately one:
+
+$$\mathbb{E}_t[\mathbf{R}_{t+1,i}] - R^f \approx \rho \, \text{cov}_t(\Delta \log c_{t+1}, \, \mathbf{R}_{t+1,i})$$
+
+## The C-CAPM: Economic Logic
+
+The expected excess return on any asset is proportional to its covariance with consumption growth. The logic is about marginal utility: an asset that pays off when consumption is already high delivers dollars in states where they are least valuable, so it must offer a higher return as compensation.
+
+- **Procyclical assets** (positive covariance with consumption): cheap, high expected returns
+- **Countercyclical assets** (negative covariance): expensive, low expected returns (they are insurance)
+- **Uncorrelated assets**: priced at the riskfree rate, regardless of their own variance
+
+# The Equity Premium Puzzle
+
+## Deriving the Puzzle
+
+The C-CAPM formula must hold for the aggregate stock market. Since the approximations hold at all $t$, we can check them using long-run sample averages:
+
+$$\mathbb{E}[\mathbf{R}] - R^f \approx \rho \, \text{cov}(\Delta \log c, \, \mathbf{R})$$
+
+Historically in U.S. data (postwar period):
+
+- $\text{cov}(\Delta \log c, \mathbf{R}) \approx 0.004$ (aggregate consumption is quite smooth)
+- $\mathbb{E}[\mathbf{R}] - R^f \approx 0.08$ (stocks earned about 8 percent more than riskless assets)
+
+The only way $0.08 \approx \rho \times 0.004$ can hold is if $\rho \approx 20$.
+
+## Is $\rho = 20$ Plausible?
+
+Consider a gamble: with probability 1/2 you consume \$50,000/year forever, with probability 1/2 you consume \$100,000/year. What certain income $X$ would make you indifferent?
+
+| $\rho$ | Certainty equivalent $X$ |
+|---|---|
+| 1 | \$70,711 |
+| 3 | \$63,246 |
+| 5 | \$58,565 |
+| 10 | \$53,991 |
+| 20 | \$51,858 |
+| 30 | \$51,209 |
+
+(Mankiw and Zeldes, 1991). With $\rho = 20$, you would accept barely more than the worst outcome. Most economists regard $\rho$ between 1 and 5 as plausible.
+
+## The Riskfree Rate Puzzle
+
+From the Euler equation for the riskfree asset (using the same CRRA approximations):
+
+$$\Delta \log c_{t+1} \approx \rho^{-1}(r^f - \vartheta)$$
+
+Average consumption growth per capita has been about 1.5 percent, while real riskfree rates have been at most 1 percent. Even with zero impatience ($\vartheta = 0$):
+
+$$0.015 \approx 0.01/\rho \quad \Longrightarrow \quad \rho \approx 0.67$$
+
+## The Two Puzzles Point in Opposite Directions
+
+The equity premium puzzle says $\rho$ must be very large ($\approx 20$). The riskfree rate puzzle says $\rho$ must be very small ($< 1$). The two puzzles point in **opposite directions**, which is what makes the joint challenge so difficult.
+
+Proposed resolutions include habit formation, rare disasters, long-run consumption risk, and limited stock market participation.
+
+# Rational Bubbles
+
+## Canonical Pricing Under Risk Neutrality
+
+To study bubbles in the simplest possible setting, assume a risk-neutral investor ($u(c) = c$, so $u'(c) = 1$). The Euler equation simplifies to
+
+$$P_t = \mathbb{E}_t \left[\frac{P_{t+1} + d_{t+1}}{R}\right]$$
+
+where $R$ is the constant gross discount rate. Forward iteration gives
+
+$$P_t = \mathbb{E}_t \left[\sum_{s=t+1}^{T+1} R^{t-s} d_s\right] + R^{-(T+1-t)} \mathbb{E}_t[P_{T+1}]$$
+
+If we impose the **no-bubbles condition** $\lim_{T \to \infty} R^{-(T+1-t)} \mathbb{E}_t[P_{T+1}] = 0$, the price equals the present discounted value of dividends. But this condition is an *assumption*, not a theorem.
+
+## Deterministic Bubbles
+
+We *assumed* the no-bubbles condition. Consider instead $P_t = P_t^* + B_t$ where the bubble grows at the interest rate: $B_{t+1} = R^f B_t$. Does this satisfy the Euler equation?
+
+$$\begin{aligned}
+\mathbb{E}_t[P_{t+1} + d_{t+1}]/R^f &= \mathbb{E}_t[P_{t+1}^* + B_{t+1} + d_{t+1}]/R^f \\
+  &= \mathbb{E}_t[P_{t+1}^* + d_{t+1}]/R^f + B_t R^f/R^f \\
+  &= P_t^* + B_t = P_t \quad \checkmark
+\end{aligned}$$
+
+The FOC has **infinitely many solutions** of this form. Nothing rules out a rational deterministic bubble growing at rate $R^f$: investors hold the overpriced asset because expected capital gains compensate.
+
+## Stochastically Bursting Bubbles
+
+Blanchard (1979) considers a more realistic bubble that can burst:
+
+$$q_{t+1} = \begin{cases} (R^f/\alpha)\, q_t & \text{with probability } \alpha \\ 0 & \text{with probability } 1-\alpha \end{cases}$$
+
+Checking: $\mathbb{E}_t[q_{t+1}] = \alpha \cdot (R^f/\alpha)q_t + (1-\alpha)\cdot 0 = R^f q_t$. The bubble satisfies the Euler equation because it grows faster than $R^f$ while it survives, compensating investors for the risk of total collapse. The probability the bubble has burst by date $t+s$ is $1 - \alpha^s$, which approaches one as $s \to \infty$: every such bubble eventually collapses, but the *timing* is unpredictable.
+
+## Arguments Against Bubbles
+
+Several arguments limit when rational bubbles can exist:
+
+1. **No negative bubbles.** If $B_t < 0$ and grows without bound, eventually $P_t < 0$, but shares can simply be discarded, so negative prices are impossible.
+
+2. **Reproducible assets.** If an asset can be manufactured at cost $\bar{P}$, the bubble cannot push prices past $\bar{P}$. Rational bubbles are therefore ruled out for assets with close substitutes.
+
+3. **Risk aversion.** The derivation assumed risk neutrality. With risk-averse investors, the bubble introduces uncompensated risk, making it harder to sustain.
+
+4. **General equilibrium.** If the bubble's value eventually exceeds the entire capital stock, productive capital has been driven to zero, an impossibility.
+
+Despite these arguments, episodes like the dot-com boom and the 2008 housing crisis have led many economists to take bubble models seriously.
+
+# Summary
+
+## Key Takeaways (1/2)
+
+- **Lucas model:** the price of an asset equals the PDV of dividends discounted by the stochastic discount factor $\mathcal{M}_{t,t+n} = \beta^n u'(d_{t+n})/u'(d_t)$; with log utility, $P_t = d_t/\vartheta$ because income and substitution effects exactly cancel
+
+- **Portfolio choice:** the CRRA investor allocates $\varsigma = \phi/(\rho \sigma^2_r)$ to the risky asset; portfolio risk actually *falls* when asset risk rises because the consumer rebalances aggressively
+
+- **Consumption with portfolio choice:** increased asset risk reduces consumption (for $\rho > 1$) through three interacting channels (income, substitution, and precautionary) with the income effect dominating
+
+## Key Takeaways (2/2)
+
+- **C-CAPM:** every asset's expected excess return satisfies $\mathbb{E}[\mathbf{R}_i] - R^f \approx \rho \, \text{cov}(\Delta \log c, \mathbf{R}_i)$; only consumption covariance matters for pricing, not the asset's own variance
+
+- **Equity premium puzzle:** matching the 8% historical equity premium requires $\rho \approx 20$, while the riskfree rate puzzle requires $\rho < 1$; these point in opposite directions and remain an active area of research
+
+- **Rational bubbles:** the Euler equation admits solutions with rational bubbles that grow at rate $R^f$, but negative bubbles, reproducibility, risk aversion, and GE considerations restrict their plausibility

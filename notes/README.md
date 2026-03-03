@@ -22,3 +22,5 @@ This directory contains lecture notes for each class session. Notes include lear
 | `lecture_01.md` | 2025-01-20 | Development Environment Setup |
 | `lecture_02.md` | 2025-01-27 | Snow Day (Virtual Session) |
 | `lecture_03.md` | 2025-02-03 | Intertemporal Choice |
+| `lecture_04.md` | 2025-02-10 | Consumption Theory |
+| `lecture_05.md` | 2025-02-17 | Advanced Consumption Models |

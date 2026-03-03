@@ -56,6 +56,9 @@ project:
         - file: notes/lecture_01.md
         - file: notes/lecture_02.md
         - file: notes/lecture_03.md
+        - file: notes/lecture_04.md
+        - file: notes/lecture_05.md
+        - file: notes/lecture_06.md
     - file: slides/README.md
       title: Slides
     - file: notebooks/README.md
@@ -63,6 +66,10 @@ project:
       children:
         - file: notebooks/consumption_two_period.md
         - file: notebooks/olg_extra.md
+        - file: notebooks/envelope_crra.md
+        - file: notebooks/random_walk_cons_fn.md
+        - file: notebooks/advanced_consumption.md
+        - file: notebooks/risk_and_consumption.md
     - file: quantecon/README.md
       title: QuantEcon
       children:
@@ -75,6 +82,9 @@ project:
         - title: Nonlinear Dynamics
           children:
             - file: quantecon/nonlinear/olg.md
+        - title: Consumption
+          children:
+            - file: quantecon/consumption/perm_income.md
     
 site:
   template: book-theme
