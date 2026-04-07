@@ -232,5 +232,11 @@ slides/**/*.html
 slides/**/*_files/
 slides/**/mathjax-config.js
 
+# Midterm (do not publish)
+assignments/midterm/
+
+# Quality reports and generated outputs
+output/
+
 # Claude Code
 .claude/

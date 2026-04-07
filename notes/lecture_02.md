@@ -3,7 +3,7 @@ title: Snow Day
 short_title: Lecture 02
 subtitle: Modeling Macroeconomics | Lecture 02
 label: lecture-02
-date: 2025-01-27
+date: 2026-01-27
 description: Virtual session covering repository syncing, course website updates, JupyterLab notebooks, and DataCamp assignments.
 tags:
   - snow-day

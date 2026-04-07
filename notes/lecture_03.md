@@ -3,7 +3,7 @@ title: Intertemporal Choice
 short_title: Lecture 03
 subtitle: Modeling Macroeconomics | Lecture 03
 label: lecture-03
-date: 2025-02-03
+date: 2026-02-03
 description: The Fisher two-period consumption problem, the Euler equation, and the Diamond overlapping generations model.
 tags:
   - consumption

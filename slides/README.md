@@ -11,6 +11,11 @@ Lecture slides are posted here each week. Each module covers a different topic i
 - [M05: Advanced Consumption Models](/slides/m05/advanced-consumption-slides.html)
 - [M06: Risk and Consumption](/slides/m06/risk-and-consumption-slides.html)
 - [M07: Asset Pricing](/slides/m07/asset-pricing-slides.html)
+- M08: Midterm Exam (no slides)
+- M09: Field Trip: GW OSCON (no slides)
+- [M10: Investment Theory](/slides/m10/investment-theory-slides.html)
+- [M11: Growth Theory I](/slides/m11/growth-theory-slides.html)
+- [M12: Growth Theory II](/slides/m12/endogenous-growth-slides.html)
 
 ## Building Slides Locally
 

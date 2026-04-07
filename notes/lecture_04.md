@@ -3,7 +3,7 @@ title: Consumption Theory
 short_title: Lecture 04
 subtitle: Modeling Macroeconomics | Lecture 04
 label: lecture-04
-date: 2025-02-10
+date: 2026-02-10
 description: The envelope condition, perfect foresight CRRA model, Hall's random walk, and the consumption function with permanent and transitory income.
 tags:
   - consumption

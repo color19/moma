@@ -59,6 +59,12 @@ project:
         - file: notes/lecture_04.md
         - file: notes/lecture_05.md
         - file: notes/lecture_06.md
+        - file: notes/lecture_07.md
+        - file: notes/lecture_08.md
+        - file: notes/lecture_09.md
+        - file: notes/lecture_10.md
+        - file: notes/lecture_11.md
+        - file: notes/lecture_12.md
     - file: slides/README.md
       title: Slides
     - file: notebooks/README.md
@@ -70,6 +76,9 @@ project:
         - file: notebooks/random_walk_cons_fn.md
         - file: notebooks/advanced_consumption.md
         - file: notebooks/risk_and_consumption.md
+        - file: notebooks/investment_qmodel.md
+        - file: notebooks/neoclassical_growth.md
+        - file: notebooks/endogenous_growth.md
     - file: quantecon/README.md
       title: QuantEcon
       children:

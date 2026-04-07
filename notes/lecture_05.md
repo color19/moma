@@ -3,7 +3,7 @@ title: Advanced Consumption Models
 short_title: Lecture 05
 subtitle: Modeling Macroeconomics | Lecture 05
 label: lecture-05
-date: 2025-02-17
+date: 2026-02-17
 description: Habit formation, durable goods, and quasi-hyperbolic discounting extend the baseline consumption framework with path dependence, multi-period goods, and time-inconsistent preferences.
 tags:
   - consumption

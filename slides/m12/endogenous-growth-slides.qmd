@@ -1,0 +1,543 @@
+---
+title: "Growth Theory II"
+subtitle: "The AK Model, Romer (1986), and Lucas (1988)"
+format: revealjs
+date: 2026-04-14
+pyodide:
+  packages:
+    - numpy
+    - scipy
+    - matplotlib
+    - sympy
+---
+
+# The Problem with Exogenous Growth
+
+## Where Does Growth Come From?
+
+Last lecture established that in the RCK model, all long-run per-capita growth comes from labor-augmenting technological progress at rate $g$. But the model treats $g$ as exogenous.
+
+Why can't a perfectly competitive model explain $g$? With constant returns to scale, Euler's theorem says:
+
+$$Y = F_K \, K + F_L \, L$$
+
+All output is paid to capital and labor. The firm has no money left over to finance R&D, patenting, or any deliberate investment in technology.
+
+## The Endogenous Growth Program
+
+Romer (1986) showed the way forward: relax constant returns to scale in accumulable factors. Three approaches emerged:
+
+| Model | Mechanism | Key assumption |
+|-------|-----------|----------------|
+| **Rebelo AK** | Constant returns to capital | $\alpha = 1$, no labor in production |
+| **Romer (1986)** | Knowledge externalities | Aggregate IRS via spillovers |
+| **Lucas (1988)** | Human capital | Time allocated to study vs. work |
+
+We also examine two extensions to the RCK framework: **finite horizons** (Blanchard 1985) and **adjustment costs** (q-Ramsey).
+
+# Rebelo's Unifying Framework
+
+## The General Cobb-Douglas Model
+
+Rebelo (1991) identified the essential structure underlying all endogenous growth models. Consider the general form:
+
+$$Y_t = A \, K_t^\alpha \, L_t^\beta$$
+
+where $\alpha + \beta$ need not equal one. With a constant saving rate $s$:
+
+$$\dot{K}_t = s \, A \, K_t^\alpha \, L_t^\beta - \delta K_t$$
+
+## Per-Capita Accumulation
+
+Defining $k = K/L$ and using $\dot{L}/L = n$:
+
+$$\frac{\dot{k}_t}{k_t} = s \, A \, k_t^{\alpha - 1} L_t^{\alpha + \beta - 1} - (\delta + n)$$
+
+If a steady-state growth rate $\gamma = \dot{k}/k$ exists, the RHS must be constant. Differentiating:
+
+$$0 = (\alpha - 1) \dot{k}/k + (\alpha + \beta - 1) \dot{L}/L$$
+
+## Steady-State Growth
+
+Substituting $\dot{k}/k = \gamma$ and $\dot{L}/L = n$:
+
+$$\boxed{0 = (\alpha - 1) \gamma + n(\alpha + \beta - 1)}$$
+
+This single equation catalogs every possible growth outcome.
+
+## A Catalog of Growth Possibilities
+
+| Case | Returns | Result |
+|------|---------|--------|
+| $\alpha + \beta = 1$, $\alpha < 1$ | CRS, diminishing returns to $K$ | $\gamma = 0$ (Solow) |
+| $\alpha + \beta = 1$, $\alpha = 1$ ($\beta = 0$) | CRS, constant returns to $K$ | $\gamma > 0$ (Rebelo AK) |
+| $\alpha + \beta > 1$, $\alpha < 1$, $n > 0$ | IRS | $\gamma = \frac{\alpha+\beta-1}{1-\alpha} n$ |
+| $\alpha + \beta > 1$, $\alpha < 1$, $n = 0$ | IRS, no pop. growth | $\gamma = 0$ |
+
+Only two configurations generate sustained per-capita growth without exogenous technology.
+
+## Why Solow Cannot Generate Perpetual Growth
+
+With $\alpha < 1$, the marginal product of capital falls as $k$ grows:
+
+$$f'(k) = \alpha \, k^{\alpha - 1} \to 0 \quad \text{as} \quad k \to \infty$$
+
+Eventually the gross return to capital falls below depreciation, so further accumulation is unprofitable. Capital accumulation alone cannot sustain growth when returns diminish.
+
+There are only three sources of growth: technology, labor, and capital. If technology is fixed and capital has diminishing returns, growth must eventually stop.
+
+## Diminishing vs. Constant Returns to Capital
+
+```{pyodide}
+import numpy as np
+import matplotlib.pyplot as plt
+
+k = np.linspace(0.1, 20, 500)
+
+fig, axes = plt.subplots(1, 2, figsize=(10, 4))
+
+for alpha in [0.33, 0.5, 0.75]:
+    mpk = alpha * k**(alpha - 1)
+    axes[0].plot(k, mpk, lw=2, label=rf'$\alpha = {alpha}$')
+axes[0].axhline(0.08, color='gray', ls=':', lw=1, label=r'$\delta = 0.08$')
+axes[0].set_xlabel('Capital per worker $k$')
+axes[0].set_ylabel("Marginal product $f'(k)$")
+axes[0].set_title(r'Diminishing returns ($\alpha < 1$): MPK $\to 0$')
+axes[0].legend(fontsize=8)
+axes[0].set_ylim(0, 1.0)
+axes[0].grid(True, alpha=0.3)
+
+A_vals = [0.10, 0.15, 0.20]
+for A in A_vals:
+    axes[1].axhline(A, lw=2, label=rf'$A = {A}$')
+axes[1].axhline(0.08, color='gray', ls=':', lw=1, label=r'$\delta = 0.08$')
+axes[1].set_xlabel('Capital per worker $k$')
+axes[1].set_ylabel(r"Marginal product $f'(k) = A$")
+axes[1].set_title(r'Constant returns ($\alpha = 1$): MPK $= A$ always')
+axes[1].legend(fontsize=8)
+axes[1].set_ylim(0, 0.3)
+axes[1].grid(True, alpha=0.3)
+
+plt.tight_layout()
+plt.show()
+```
+
+# The Rebelo AK Model
+
+## Setup
+
+A social planner maximizes discounted CRRA utility:
+
+$$\max \int_0^\infty \frac{C^{1-\rho}}{1-\rho} \, e^{-\delta_t \, t} \, dt \quad \text{s.t.} \quad \dot{K} = AK - C$$
+
+where we set population growth and depreciation to zero for clarity.
+
+The production function is $Y = AK$, so $f'(K) = A$ always. No diminishing returns.
+
+## The Euler Equation in the AK Model
+
+The Hamiltonian is:
+
+$$\mathcal{H} = u(C) + \lambda(AK - C)$$
+
+First condition: $u'(C) = \lambda$, giving $C^{-\rho} = \lambda$.
+
+Second condition: $\dot{\lambda} = \delta_t \lambda - A\lambda$, giving $\dot{\lambda}/\lambda = \delta_t - A$.
+
+Combining:
+
+$$\boxed{\frac{\dot{C}}{C} = \frac{1}{\rho}(A - \delta_t)}$$
+
+Growth is constant and immediate. There are **no transitional dynamics**.
+
+## Saving and Growth in the AK Model
+
+From the resource constraint $\dot{K}/K = A - C/K$, steady-state growth requires a constant $C/K$ ratio:
+
+$$C/K = A - \gamma \quad \Longrightarrow \quad \frac{S}{AK} = \frac{\gamma}{A}$$
+
+The saving rate is constant, and the growth rate is directly proportional to it:
+
+$$\gamma = A \cdot s$$
+
+**A well-defined solution requires** $\gamma < A$, i.e., $\rho^{-1}(A - \delta_t) < A$. This is an impatience condition analogous to the one in the infinite-horizon consumption model.
+
+## AK vs. RCK: No Convergence
+
+A striking implication: in the AK model, poor and rich countries grow at the **same rate** forever. There is no convergence.
+
+In the RCK model, countries below the steady state grow *faster* than countries above it, implying convergence. The data shows conditional convergence (controlling for institutions and policies) but not absolute convergence, which is somewhere between the two predictions.
+
+## AK vs. RCK: Comparative Dynamics
+
+```{pyodide}
+import numpy as np
+import matplotlib.pyplot as plt
+
+A = 0.15
+delta_t = 0.04
+rho = 2.0
+gamma_AK = (A - delta_t) / rho
+
+alpha = 0.33
+delta_dep = 0.08
+n, g = 0.01, 0.02
+k_ss = (alpha / (delta_t + n + delta_dep + rho * g)) ** (1 / (1 - alpha))
+
+T = 60
+t = np.linspace(0, T, 500)
+
+fig, axes = plt.subplots(1, 2, figsize=(10, 4))
+
+# AK: parallel growth, no convergence
+for K0, label in [(1.0, 'Rich country'), (0.3, 'Poor country')]:
+    Y = A * K0 * np.exp(gamma_AK * t)
+    axes[0].plot(t, Y / (A * 1.0), lw=2, label=label)
+axes[0].set_xlabel('Time')
+axes[0].set_ylabel('Output (relative to rich at $t=0$)')
+axes[0].set_title('AK: no convergence, parallel growth')
+axes[0].legend(fontsize=9)
+axes[0].grid(True, alpha=0.3)
+
+# RCK: convergence
+lam = -0.04
+for k0_frac, label in [(0.3, 'Poor country'), (1.5, 'Rich country')]:
+    k0 = k0_frac * k_ss
+    k_path = k_ss + (k0 - k_ss) * np.exp(lam * t)
+    axes[1].plot(t, k_path**alpha, lw=2, label=label)
+axes[1].axhline(k_ss**alpha, color='gray', ls=':', lw=1)
+axes[1].set_xlabel('Time')
+axes[1].set_ylabel('Output per efficiency unit')
+axes[1].set_title('RCK: convergence to common steady state')
+axes[1].legend(fontsize=9)
+axes[1].grid(True, alpha=0.3)
+
+plt.tight_layout()
+plt.show()
+```
+
+## The AK Model as Reinterpretation
+
+The Rebelo AK model is the **perfect foresight infinite-horizon consumption model** reinterpreted as a growth model:
+
+| Feature | Consumption model | AK growth model |
+|---------|-------------------|-----------------|
+| Interest rate | $R$ (exogenous) | $A$ (MPK, constant) |
+| Growth rate | $\rho^{-1}(R - \delta_t)$ | $\rho^{-1}(A - \delta_t)$ |
+| Labor income | Yes | No ($\beta = 0$) |
+| Impatience condition | Growth $< R$ | Growth $< A$ |
+
+The key difference: the consumption model has both labor and capital income, while the AK model rules out labor income by assumption.
+
+# The Romer (1986) Model
+
+## Knowledge as a Byproduct of Investment
+
+Romer (1986) provides microfoundations for increasing returns. Each firm $j$ has a CRS production function:
+
+$$y_j = k_j^\alpha \, \ell_j^{1-\alpha} \, \Xi^\eta$$
+
+where $\Xi$ is the aggregate stock of knowledge. Romer assumes no capital depreciation, so cumulative investment equals the capital stock. Knowledge equals this aggregate:
+
+$$\Xi_t = \int_{-\infty}^t I_v \, dv = K_t$$
+
+Each firm takes $\Xi$ as given (it is an externality).
+
+## Why CRS at the Firm Level Matters
+
+At the **firm level**, the production function is CRS in $(k_j, \ell_j)$ holding $\Xi$ fixed. This means:
+
+- Firms earn zero profits (Euler's theorem applies)
+- Perfect competition is consistent
+- No need for monopolistic competition or patents
+
+At the **aggregate level**, substituting $\Xi = K$ gives:
+
+$$Y = K^{\alpha + \eta}$$
+
+If $\alpha + \eta > 1$, there are increasing returns at the aggregate level, even though each firm sees CRS.
+
+## The Private Euler Equation
+
+Households maximize CRRA utility. Each household ignores its trivial contribution to $\Xi$. The private marginal product of capital is $\alpha \, k^{\alpha-1} \Xi^\eta$, so the individual Euler equation is:
+
+$$\dot{c}_{t,i}/c_{t,i} = \rho^{-1}(\alpha \, k_{t,i}^{\alpha-1} \Xi_t^\eta - \delta_t)$$
+
+With identical households and $\Xi = K$, the aggregate Euler equation becomes:
+
+$$\frac{\dot{c}}{c} = \frac{1}{\rho}(\alpha \, k^{\alpha + \eta - 1} - \delta_t)$$
+
+## Balanced Growth Path
+
+A balanced growth path exists when $\alpha + \eta = 1$. Then $k^{\alpha+\eta-1} = 1$, and:
+
+$$\boxed{\frac{\dot{c}}{c} = \frac{1}{\rho}(\alpha - \delta_t)} \qquad \text{(private optimum)}$$
+
+Growth is perpetual and constant, just as in the AK model. The effective "broad" exponent on capital is $\alpha + \eta = 1$.
+
+## The Social Planner's Optimum
+
+The social planner internalizes the externality: increasing $K$ raises $\Xi$, which benefits all firms. The social marginal product of capital is $(\alpha + \eta) k^{\alpha+\eta-1}$, so:
+
+$$\frac{\dot{c}}{c} = \frac{1}{\rho}(\alpha + \eta - \delta_t) \qquad \text{(social optimum)}$$
+
+On the balanced growth path ($\alpha + \eta = 1$), this becomes $\rho^{-1}(1 - \delta_t)$. Since $\alpha + \eta > \alpha$, the social planner achieves **faster growth** than the decentralized economy.
+
+## The Externality Wedge
+
+The gap between social and private growth rates is:
+
+$$\Delta \gamma = \frac{\eta}{\rho}$$
+
+This is the growth cost of the knowledge externality. Each firm's investment generates social benefits (more knowledge for everyone) that the firm does not capture.
+
+**Policy implication:** Capital accumulation should be **subsidized** to close the gap between private and social returns. Equating the after-subsidy private MPK to the social MPK, $(1+s^*)\alpha = \alpha + \eta$, gives $s^* = \eta/\alpha$.
+
+## Private vs. Social Growth Rates
+
+```{pyodide}
+import numpy as np
+import matplotlib.pyplot as plt
+
+alpha_vals = np.linspace(0.2, 0.8, 100)
+delta_t = 0.04
+rho = 2.0
+eta_vals = 1 - alpha_vals
+
+gamma_private = (alpha_vals - delta_t) / rho
+gamma_social = (alpha_vals + eta_vals - delta_t) / rho
+
+fig, ax = plt.subplots(figsize=(8, 4))
+ax.plot(alpha_vals, gamma_private * 100, lw=2, label='Private (decentralized)')
+ax.plot(alpha_vals, gamma_social * 100, lw=2, ls='--', label='Social (planner)')
+ax.fill_between(alpha_vals, gamma_private * 100, gamma_social * 100, alpha=0.15, color='C1')
+ax.annotate(r'Externality wedge $= \eta / \rho$', xy=(0.5, 30), fontsize=10, ha='center', color='C1')
+ax.set_xlabel(r"Capital share $\alpha$ (knowledge externality $\eta = 1 - \alpha$)")
+ax.set_ylabel('Growth rate (%)')
+ax.set_title('Romer (1986): private underinvestment in knowledge')
+ax.legend(fontsize=9)
+ax.grid(True, alpha=0.3)
+plt.tight_layout()
+plt.show()
+```
+
+## R&D Spending and Growth
+
+```{pyodide}
+import numpy as np
+import matplotlib.pyplot as plt
+
+countries = ['US', 'Japan', 'Germany', 'Korea', 'France', 'UK',
+             'China', 'Canada', 'Italy', 'India', 'Brazil', 'Mexico']
+rd_pct = [3.4, 3.3, 3.1, 4.9, 2.2, 2.9, 2.6, 1.7, 1.4, 0.7, 1.2, 0.3]
+gdp_pc = [86, 52, 72, 59, 61, 61, 27, 66, 61, 11, 22, 26]
+
+fig, ax = plt.subplots(figsize=(8, 5))
+ax.scatter(rd_pct, gdp_pc, s=60, zorder=5)
+for i, c in enumerate(countries):
+    ax.annotate(c, (rd_pct[i], gdp_pc[i]), fontsize=8,
+                xytext=(5, 5), textcoords='offset points')
+ax.set_xlabel(r'R&D spending (% of GDP)')
+ax.set_ylabel(r'GDP per capita (USD thousands, PPP)')
+ax.set_title('Countries that spend more on R&D tend to be richer')
+ax.grid(True, alpha=0.3)
+plt.tight_layout()
+plt.show()
+```
+
+# The Lucas (1988) Model
+
+## Human Capital and Growth
+
+Lucas (1988) introduces a time allocation decision between working and studying:
+
+$$y = A \, k^\alpha \, (u \, h)^{1-\alpha}$$
+
+where $u$ is the fraction of time spent working and $h$ is human capital per worker.
+
+Human capital accumulates according to:
+
+$$\dot{h}/h = \phi(1 - u)$$
+
+Time spent studying ($1 - u$) builds human capital at rate $\phi$, with **no diminishing returns**. The exponent on $h$ in the accumulation equation is exactly one.
+
+## Mankiw's Distinction
+
+Mankiw (1995) distinguishes between:
+
+- **Knowledge:** the total stock of scientific and technological discoveries (written in textbooks, journals, the internet)
+- **Human capital:** the subset of knowledge transmitted into individual brains through studying
+
+Since lifetimes are finite, individual human capital cannot grow without bound. This makes human capital accumulation an implausible source of *perpetual* growth. Fundamental research and technological development are more plausible candidates.
+
+The Lucas model is best interpreted as a tool for **normative** (policy) analysis rather than positive description.
+
+## Two Interpretations
+
+| Interpretation | $u$ | $1-u$ | $h$ |
+|---------------|-----|-------|-----|
+| **Aggregate** | Fraction of population producing goods | Fraction doing research | Stock of knowledge |
+| **Individual** | Fraction of time spent working | Fraction of time studying | Personal human capital |
+
+Neither interpretation is fully satisfactory: aggregate knowledge should have diminishing returns to individual study, and individual human capital should be bounded by finite lifetimes.
+
+## The Solow Version
+
+Fix the saving rate at $s$. Capital accumulation becomes:
+
+$$\frac{\dot{k}}{k} = s \, k^{\alpha-1} (u \, h)^{1-\alpha} - (n + \delta)$$
+
+For a steady-state growth rate to exist, $k/h$ must be constant, so $k$ and $h$ must grow at the same rate.
+
+## Broad Capital
+
+Define "broad capital" as $\kappa \equiv k^\alpha \, h^{1-\alpha}$. Then:
+
+$$y = \hat{A} \, \kappa \qquad \text{where} \quad \hat{A} = A \, u^{1-\alpha}$$
+
+If $u$ is constant and $k$ and $h$ grow at the same rate, broad capital has an exponent of **one**. The model reduces to Rebelo's AK structure.
+
+The engine of growth is human capital accumulation, which itself has a linear law of motion: $\dot{h} = \phi(1-u) h$.
+
+## The Optimal Growth Rate
+
+The social planner solves for optimal paths of both $k$ and $h$. The steady-state growth rate is:
+
+$$\boxed{\frac{\dot{c}}{c} = \frac{1}{\rho}(\phi - \delta_t)}$$
+
+The key parameter is $\phi$ (efficiency of human capital accumulation), playing the role of $A$ in the Rebelo model.
+
+## Human Capital Externalities
+
+Lucas also considers an externality version where productivity depends on **average** human capital $\bar{h}$:
+
+$$y_i = A \, k_i^\alpha \, (u_i \, h_i)^{1-\alpha} \, \bar{h}^\psi$$
+
+The externality $\bar{h}^\psi$ is like an increase in the return to saving. Its effect on growth depends on the balance between income and substitution effects.
+
+## The Decentralized Growth Rate
+
+Working through the Hamiltonian for the decentralized economy:
+
+$$\gamma_h = \frac{\rho^{-1}(\phi - \delta_t)}{1 + \psi(1 - 1/\rho)/(1-\alpha)}$$
+
+**Three cases:**
+
+- $\rho = 1$ (log utility): income and substitution effects cancel; $\gamma_h = \phi - \delta_t$ regardless of $\psi$
+- $\rho < 1$: substitution effect dominates; externality **raises** growth
+- $\rho > 1$: income effect dominates; externality **lowers** growth
+
+## Externality Implications
+
+Individual consumers do not internalize the benefit their human capital has on others (via $\bar{h}$). The social planner, who accounts for the externality's effect on aggregate productivity, chooses **more** investment in human capital than the decentralized equilibrium provides.
+
+Lucas derives an optimal **subsidy to education** that corrects the externality and induces households to invest the socially optimal amount in human capital.
+
+## Growth Rate and the Externality
+
+```{pyodide}
+import numpy as np
+import matplotlib.pyplot as plt
+
+phi = 0.10
+delta_t = 0.04
+alpha = 0.33
+
+psi_vals = np.linspace(0, 0.5, 100)
+
+fig, ax = plt.subplots(figsize=(8, 4))
+for rho in [0.5, 1.0, 2.0, 4.0]:
+    gamma_planner = (phi - delta_t) / rho
+    gamma_decent = gamma_planner / (1 + psi_vals * (1 - 1/rho) / (1 - alpha))
+    ax.plot(psi_vals, gamma_decent * 100, lw=2, label=rf'$\rho = {rho}$')
+
+ax.axhline((phi - delta_t) / 2.0 * 100, color='gray', ls=':', lw=1)
+ax.annotate(r'Planner ($\psi=0$, $\rho=2$)', xy=(0.35, (phi - delta_t)/2*100 + 0.1),
+            fontsize=8, color='gray')
+ax.set_xlabel(r'Externality parameter $\psi$')
+ax.set_ylabel('Decentralized growth rate (%)')
+ax.set_title(r'Lucas externality: effect depends on $\rho$ relative to 1')
+ax.legend(fontsize=9)
+ax.grid(True, alpha=0.3)
+plt.tight_layout()
+plt.show()
+```
+
+## Human Capital and Income
+
+```{pyodide}
+import numpy as np
+import matplotlib.pyplot as plt
+
+schooling = [13.4, 12.8, 14.1, 12.2, 11.5, 13.0, 8.1, 13.3, 10.4, 6.5, 8.0, 8.8]
+gdp_pc = [86, 52, 72, 59, 61, 61, 27, 66, 61, 11, 22, 26]
+countries = ['US', 'Japan', 'Germany', 'Korea', 'France', 'UK',
+             'China', 'Canada', 'Italy', 'India', 'Brazil', 'Mexico']
+
+fig, ax = plt.subplots(figsize=(8, 5))
+ax.scatter(schooling, np.log(np.array(gdp_pc) * 1000), s=60, zorder=5)
+for i, c in enumerate(countries):
+    ax.annotate(c, (schooling[i], np.log(gdp_pc[i] * 1000)), fontsize=8,
+                xytext=(5, 5), textcoords='offset points')
+ax.set_xlabel('Average years of schooling')
+ax.set_ylabel('Log GDP per capita (PPP)')
+ax.set_title('More schooling is associated with higher income (Lucas channel)')
+ax.grid(True, alpha=0.3)
+plt.tight_layout()
+plt.show()
+```
+
+# Synthesis
+
+## The Policy Debate: R&D vs. Education
+
+The three models point to different policy levers:
+
+| Policy | Model | Mechanism | Evidence |
+|--------|-------|-----------|----------|
+| R&D tax credits | Romer | Subsidize knowledge creation | \$1 credit generates roughly \$1 in R&D (Hall and Van Reenen 2000) |
+| Public research funding | Romer | Government produces knowledge directly | NIH-funded research yields high social returns |
+| Education subsidies | Lucas | Increase human capital accumulation | Returns to schooling: ~10% per year globally (Psacharopoulos and Patrinos 2018) |
+| Patent protection | Romer | Internalize knowledge externality | Tradeoff: incentivizes innovation but restricts diffusion |
+
+In practice, most countries pursue **both** channels simultaneously. The models help quantify the optimal mix.
+
+## Comparing the Three Models
+
+| Model | Engine | Transitional dynamics | Market failure |
+|-------|--------|-----------------------|----------------|
+| **Rebelo AK** | Constant returns to $K$ | None | None |
+| **Romer (1986)** | Knowledge spillovers | None (if $\alpha+\eta=1$) | Externality |
+| **Lucas (1988)** | Human capital | None (on BGP) | Externality (if $\psi>0$) |
+
+## The Common Thread
+
+Any model generating sustained per-capita growth without exogenous technology must reduce to a structure where **accumulable factors have constant returns**:
+
+- **Rebelo:** assumes it directly ($Y = AK$)
+- **Romer:** achieves it through knowledge externalities ($\alpha + \eta = 1$)
+- **Lucas:** achieves it through human capital accumulation ($\dot{h}/h = \phi(1-u)$, linear in $h$)
+
+In each case, "capital" must be interpreted broadly to include physical capital, human capital, knowledge, and organizational capital.
+
+## Policy Implications
+
+| Model | Market outcome | Optimal policy |
+|-------|---------------|----------------|
+| **RCK** (M11) | Efficient | None needed |
+| **Romer** | Under-invests in capital | Subsidize investment |
+| **Lucas** | Under-invests in education | Subsidize education |
+
+Both Romer and Lucas predict the decentralized economy **under-invests** relative to the social optimum. The policy remedy depends on whether the externality operates through physical capital (Romer) or human capital (Lucas).
+
+## Key Takeaways (1/2)
+
+- **Exogenous growth** models cannot explain *why* technology improves: perfect competition with CRS exhausts all income on factor payments.
+- Rebelo's framework catalogs all growth possibilities: $0 = (\alpha-1)\gamma + n(\alpha+\beta-1)$.
+- The **AK model** eliminates transitional dynamics and makes growth proportional to the saving rate.
+- **Romer (1986)** microfounds increasing returns via knowledge spillovers ($\Xi = K$), creating a wedge between private and social returns.
+
+## Key Takeaways (2/2)
+
+- **Lucas (1988)** introduces a work-vs-study trade-off. "Broad capital" ($k^\alpha h^{1-\alpha}$) has CRS, reducing the model to AK. The human capital externality's direction depends on $\rho \gtrless 1$.
+- The common lesson: **perpetual growth requires constant returns to factors that can be accumulated without bound**.
