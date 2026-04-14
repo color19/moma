@@ -224,7 +224,7 @@ print(f"          s     = {s_num:.4f} ({s_num*100:.2f}%)")
 
 ## Impatience Condition
 
-The AK model has a well-defined solution only when $\gamma < A$. For a given $A$, the maximum
+The AK model has a well-defined solution only when $\gamma < A$. For a given $A$, the minimum
 feasible $\rho$ satisfies $\rho^{-1}(A - \delta_t) < A$. We find the critical $\rho$ numerically.
 
 ```{code-cell} ipython3
@@ -266,7 +266,7 @@ axes[0].grid(True, alpha=0.3)
 # RCK: convergence (stylized linearization)
 alpha_rck, delta_rck, delta_t_rck = 0.33, 0.08, 0.04
 n_rck, g_rck, rho_rck = 0.01, 0.02, 2.0
-k_ss_rck = (alpha_rck / (delta_t_rck + n_rck + delta_rck + rho_rck * g_rck)
+k_ss_rck = (alpha_rck / (delta_rck + delta_t_rck + rho_rck * g_rck)
             ) ** (1 / (1 - alpha_rck))
 lam_approx = -0.04
 

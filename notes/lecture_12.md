@@ -44,6 +44,7 @@ By the end of this lecture, students will be able to:
 - **Knowledge externalities (Romer 1986)**: aggregate knowledge $\Xi = K$ creates IRS at the economy level while each firm faces CRS; the private growth rate $\rho^{-1}(\alpha - \delta_t)$ is below the social optimum $\rho^{-1}(1 - \delta_t)$
 - **Broad capital (Lucas 1988)**: defining $\kappa = k^\alpha h^{1-\alpha}$ reduces the model to an AK structure; the engine of growth is human capital accumulation $\dot{h}/h = \phi(1-u)$
 - **Blanchard perpetual youth (1985)**: finite-horizon consumers discount the future more heavily than an infinitely lived dynasty, reducing capital accumulation below the RCK level and breaking Ricardian equivalence
+- **q-Ramsey model**: quadratic adjustment costs slow convergence without changing the steady state; both investment smoothing (higher $\xi$) and consumption smoothing (higher $\rho$) have similar effects on convergence speed
 
 ## Reading Assignment
 
@@ -55,6 +56,7 @@ Before Lecture 13, read the following chapters from [A Gentle Introduction to In
 3. [The Romer (1986) Model of Growth](https://jhu-econ.github.io/intertemporal-choice/content/growth/Romer86/)
 4. [The Lucas Growth Model](https://jhu-econ.github.io/intertemporal-choice/content/growth/LucasGrowth/)
 5. [The Blanchard (1985) Model of Perpetual Youth](https://jhu-econ.github.io/intertemporal-choice/content/growth/BlanchardFiniteHorizon/)
+6. [A q-Ramsey Model](https://jhu-econ.github.io/intertemporal-choice/content/growth/qRamsey/)
 :::
 
 ## Homework

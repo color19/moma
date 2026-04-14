@@ -160,15 +160,11 @@ The saving rate is constant, and the growth rate is directly proportional to it:
 
 $$\gamma = A \cdot s$$
 
-**A well-defined solution requires** $\gamma < A$, i.e., $\rho^{-1}(A - \delta_t) < A$. This is an impatience condition analogous to the one in the infinite-horizon consumption model.
+**A well-defined solution requires** $\gamma < A$, i.e., $\rho^{-1}(A - \delta_t) < A$. This impatience condition (analogous to the consumption model) also ensures the transversality condition holds.
 
 ## AK vs. RCK: No Convergence
 
-A striking implication: in the AK model, poor and rich countries grow at the **same rate** forever. There is no convergence.
-
-In the RCK model, countries below the steady state grow *faster* than countries above it, implying convergence. The data shows conditional convergence (controlling for institutions and policies) but not absolute convergence, which is somewhere between the two predictions.
-
-## AK vs. RCK: Comparative Dynamics
+In the AK model, poor and rich countries grow at the **same rate** forever (no convergence). In the RCK model, countries below the steady state grow faster, implying convergence. Data shows conditional convergence, somewhere between the two predictions.
 
 ```{pyodide}
 import numpy as np
@@ -182,7 +178,7 @@ gamma_AK = (A - delta_t) / rho
 alpha = 0.33
 delta_dep = 0.08
 n, g = 0.01, 0.02
-k_ss = (alpha / (delta_t + n + delta_dep + rho * g)) ** (1 / (1 - alpha))
+k_ss = (alpha / (delta_dep + delta_t + rho * g)) ** (1 / (1 - alpha))
 
 T = 60
 t = np.linspace(0, T, 500)
@@ -251,7 +247,7 @@ At the **firm level**, the production function is CRS in $(k_j, \ell_j)$ holding
 - Perfect competition is consistent
 - No need for monopolistic competition or patents
 
-At the **aggregate level**, substituting $\Xi = K$ gives:
+At the **aggregate level**, substituting $\Xi = K$ and normalizing $L = 1$:
 
 $$Y = K^{\alpha + \eta}$$
 
@@ -327,6 +323,7 @@ plt.show()
 import numpy as np
 import matplotlib.pyplot as plt
 
+# Data: OECD Main Science and Technology Indicators (2023), World Bank (2022 PPP)
 countries = ['US', 'Japan', 'Germany', 'Korea', 'France', 'UK',
              'China', 'Canada', 'Italy', 'India', 'Brazil', 'Mexico']
 rd_pct = [3.4, 3.3, 3.1, 4.9, 2.2, 2.9, 2.6, 1.7, 1.4, 0.7, 1.2, 0.3]
@@ -361,31 +358,20 @@ $$\dot{h}/h = \phi(1 - u)$$
 
 Time spent studying ($1 - u$) builds human capital at rate $\phi$, with **no diminishing returns**. The exponent on $h$ in the accumulation equation is exactly one.
 
-## Mankiw's Distinction
+## Mankiw's Distinction and Interpretations
 
-Mankiw (1995) distinguishes between:
-
-- **Knowledge:** the total stock of scientific and technological discoveries (written in textbooks, journals, the internet)
-- **Human capital:** the subset of knowledge transmitted into individual brains through studying
-
-Since lifetimes are finite, individual human capital cannot grow without bound. This makes human capital accumulation an implausible source of *perpetual* growth. Fundamental research and technological development are more plausible candidates.
-
-The Lucas model is best interpreted as a tool for **normative** (policy) analysis rather than positive description.
-
-## Two Interpretations
+Mankiw (1995): **knowledge** is the total stock of discoveries; **human capital** is the subset transmitted into brains via studying. Since lifetimes are finite, human capital cannot grow without bound, making it an implausible source of *perpetual* growth. The Lucas model is best interpreted as a **normative** tool.
 
 | Interpretation | $u$ | $1-u$ | $h$ |
 |---------------|-----|-------|-----|
-| **Aggregate** | Fraction of population producing goods | Fraction doing research | Stock of knowledge |
-| **Individual** | Fraction of time spent working | Fraction of time studying | Personal human capital |
-
-Neither interpretation is fully satisfactory: aggregate knowledge should have diminishing returns to individual study, and individual human capital should be bounded by finite lifetimes.
+| **Aggregate** | Pop. fraction producing | Pop. fraction researching | Stock of knowledge |
+| **Individual** | Time working | Time studying | Personal human capital |
 
 ## The Solow Version
 
 Fix the saving rate at $s$. Capital accumulation becomes:
 
-$$\frac{\dot{k}}{k} = s \, k^{\alpha-1} (u \, h)^{1-\alpha} - (n + \delta)$$
+$$\frac{\dot{k}}{k} = s \, A \, k^{\alpha-1} (u \, h)^{1-\alpha} - (n + \delta)$$
 
 For a steady-state growth rate to exist, $k/h$ must be constant, so $k$ and $h$ must grow at the same rate.
 
@@ -469,6 +455,7 @@ plt.show()
 import numpy as np
 import matplotlib.pyplot as plt
 
+# Data: Barro-Lee (2013) via UNDP HDR, World Bank (2022 PPP)
 schooling = [13.4, 12.8, 14.1, 12.2, 11.5, 13.0, 8.1, 13.3, 10.4, 6.5, 8.0, 8.8]
 gdp_pc = [86, 52, 72, 59, 61, 61, 27, 66, 61, 11, 22, 26]
 countries = ['US', 'Japan', 'Germany', 'Korea', 'France', 'UK',
@@ -487,57 +474,79 @@ plt.tight_layout()
 plt.show()
 ```
 
+# Extensions to the RCK Framework
+
+## Blanchard (1985): Finite Horizons
+
+Blanchard (1985) introduces agents who face a constant probability of death $p$ each instant. Expected remaining life is $p^{-1}$ (e.g., $p = 1/50$ gives a 50-year horizon).
+
+Key modifications:
+
+- **Effective discount rate**: $\hat{\delta_t} = \delta_t + p$ (mortality risk makes the future less valuable)
+- **Annuity market**: insurance pays $p \cdot w$ while alive in exchange for assets at death, raising the effective return to $\hat{r} = r + p$
+- **Individual consumption**: $c(s,t) = \hat{\delta_t}\bigl(w(s,t) + h(s,t)\bigr)$, where $\hat{\delta_t} = \delta_t + p$
+
+Individual consumption growth is $\dot{c}/c = \hat{r} - \hat{\delta_t} = r - \delta_t$: mortality terms cancel.
+
+## Aggregate Dynamics and Ricardian Equivalence
+
+The twist comes in aggregation. Newly born agents enter with zero wealth, pulling down the aggregate:
+
+$$\dot{C} = (r - \delta_t)C - p(p + \delta_t)W$$
+
+The extra term $-p(p+\delta_t)W$ is absent when $p = 0$ (the RCK case).
+
+**Consequences:**
+
+- Steady-state capital $\bar{K} < K^*_{\text{RCK}}$: finite-horizon agents discount more heavily and save less
+- **Ricardian equivalence fails**: a tax cut financed by future taxes transfers resources from the unborn to the living; without altruistic links across generations, current consumers do not offset this by saving more
+
+## The q-Ramsey Model: Adjustment Costs
+
+The q-Ramsey model adds quadratic capital adjustment costs to the Ramsey framework. The cost of adjusting the capital stock by $I$ when the stock is $K$ is:
+
+$$j(I, K) = \frac{\xi}{2}\,K\left(\frac{I}{K}\right)^2$$
+
+The Euler equation is modified: the effective interest factor now depends on both the marginal product of capital and the marginal adjustment cost. When $\xi = 0$, the model reduces to the standard Ramsey model.
+
+## Adjustment Costs and Convergence Speed
+
+Key results from the q-Ramsey model:
+
+- **Same steady state** as standard Ramsey (no investment at SS, so $j = 0$)
+- **Slower convergence**: costly to adjust $K$ quickly, so the economy moves gradually toward equilibrium
+- **Larger interest rate fluctuations**: $R$ reflects both MPK and adjustment cost terms, giving the model a fighting chance at matching business cycle interest rate variation
+- Both higher $\xi$ (investment smoothing) and higher $\rho$ (consumption smoothing) slow convergence: they have similar effects through different channels
+
 # Synthesis
-
-## The Policy Debate: R&D vs. Education
-
-The three models point to different policy levers:
-
-| Policy | Model | Mechanism | Evidence |
-|--------|-------|-----------|----------|
-| R&D tax credits | Romer | Subsidize knowledge creation | \$1 credit generates roughly \$1 in R&D (Hall and Van Reenen 2000) |
-| Public research funding | Romer | Government produces knowledge directly | NIH-funded research yields high social returns |
-| Education subsidies | Lucas | Increase human capital accumulation | Returns to schooling: ~10% per year globally (Psacharopoulos and Patrinos 2018) |
-| Patent protection | Romer | Internalize knowledge externality | Tradeoff: incentivizes innovation but restricts diffusion |
-
-In practice, most countries pursue **both** channels simultaneously. The models help quantify the optimal mix.
-
-## Comparing the Three Models
-
-| Model | Engine | Transitional dynamics | Market failure |
-|-------|--------|-----------------------|----------------|
-| **Rebelo AK** | Constant returns to $K$ | None | None |
-| **Romer (1986)** | Knowledge spillovers | None (if $\alpha+\eta=1$) | Externality |
-| **Lucas (1988)** | Human capital | None (on BGP) | Externality (if $\psi>0$) |
-
-## The Common Thread
-
-Any model generating sustained per-capita growth without exogenous technology must reduce to a structure where **accumulable factors have constant returns**:
-
-- **Rebelo:** assumes it directly ($Y = AK$)
-- **Romer:** achieves it through knowledge externalities ($\alpha + \eta = 1$)
-- **Lucas:** achieves it through human capital accumulation ($\dot{h}/h = \phi(1-u)$, linear in $h$)
-
-In each case, "capital" must be interpreted broadly to include physical capital, human capital, knowledge, and organizational capital.
 
 ## Policy Implications
 
-| Model | Market outcome | Optimal policy |
-|-------|---------------|----------------|
+| Model | Market outcome | Policy lever |
+|-------|---------------|--------------|
 | **RCK** (M11) | Efficient | None needed |
-| **Romer** | Under-invests in capital | Subsidize investment |
-| **Lucas** | Under-invests in education | Subsidize education |
+| **Romer** | Under-invests in capital | Subsidize R&D ($s^* = \eta/\alpha$) |
+| **Lucas** | Under-invests in education | Subsidize schooling |
+| **Blanchard** | Under-accumulates capital | Fiscal caution (debt crowds out $K$) |
 
-Both Romer and Lucas predict the decentralized economy **under-invests** relative to the social optimum. The policy remedy depends on whether the externality operates through physical capital (Romer) or human capital (Lucas).
+Both Romer and Lucas predict the decentralized economy **under-invests** relative to the social optimum. R&D tax credits, public research funding, and education subsidies each target a different externality.
 
-## Key Takeaways (1/2)
+## Comparing Models and the Common Thread
 
-- **Exogenous growth** models cannot explain *why* technology improves: perfect competition with CRS exhausts all income on factor payments.
-- Rebelo's framework catalogs all growth possibilities: $0 = (\alpha-1)\gamma + n(\alpha+\beta-1)$.
-- The **AK model** eliminates transitional dynamics and makes growth proportional to the saving rate.
-- **Romer (1986)** microfounds increasing returns via knowledge spillovers ($\Xi = K$), creating a wedge between private and social returns.
+| Model | Engine | Dynamics | Market failure |
+|-------|--------|----------|----------------|
+| **Rebelo AK** | CRS in $K$ | None | None |
+| **Romer (1986)** | Knowledge spillovers | None (BGP) | Externality |
+| **Lucas (1988)** | Human capital | None (BGP) | Externality ($\psi>0$) |
+| **Blanchard (1985)** | Finite horizons | Convergence | Non-Ricardian |
+| **q-Ramsey** | Adjustment costs | Slow convergence | None |
 
-## Key Takeaways (2/2)
+The common thread: perpetual growth requires **constant returns to accumulable factors**. Rebelo assumes it directly ($Y = AK$); Romer achieves it via spillovers ($\alpha + \eta = 1$); Lucas via linear human capital accumulation ($\dot{h}/h = \phi(1-u)$).
 
-- **Lucas (1988)** introduces a work-vs-study trade-off. "Broad capital" ($k^\alpha h^{1-\alpha}$) has CRS, reducing the model to AK. The human capital externality's direction depends on $\rho \gtrless 1$.
-- The common lesson: **perpetual growth requires constant returns to factors that can be accumulated without bound**.
+## Key Takeaways
+
+- **Exogenous growth** models cannot explain *why* technology improves: CRS + perfect competition exhausts income on factor payments
+- Rebelo's taxonomy: $0 = (\alpha-1)\gamma + n(\alpha+\beta-1)$ catalogs all growth possibilities
+- **AK, Romer, Lucas** all reduce to constant returns in accumulable factors; Romer and Lucas predict under-investment due to externalities
+- **Blanchard** finite horizons lower steady-state capital and break Ricardian equivalence
+- **q-Ramsey** adjustment costs slow convergence without changing the steady state

@@ -284,7 +284,7 @@ The dynamics of $q$ satisfy (dropping small cross-product terms):
 
 $$\mathbb{E}_t[\Delta q_{t+1}] \approx r\, q_t - \frac{(1-\tau)f^k(k_t)}{(1-\xi)} + j_t^k$$
 
-At the $\Delta q = 0$ locus, higher $q$ must be offset by a lower marginal product, which requires lower $k$: **the locus is downward-sloping** in $(k, q)$ space.
+At the $\Delta q = 0$ locus, higher $q$ must be offset by a higher marginal product, which requires lower $k$: **the locus is downward-sloping** in $(k, q)$ space.
 
 The model has a **saddle-path equilibrium**: one stable arm leads to the steady state $(\check{k}, \check{q}) = (\check{k},\, 1)$. The economy jumps to this path at $t = 0$ and converges from there.
 
